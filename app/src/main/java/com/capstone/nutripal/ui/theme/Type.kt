@@ -19,31 +19,31 @@ val Typography = Typography(
     h1 = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp
+        fontSize = 20.sp
     ),
     // paragraph
     body1 = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Normal,
-        fontSize = 17.sp
+        fontSize = 16.sp
     ),
     // paragraph bold
     body2 = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Bold,
-        fontSize = 17.sp
+        fontSize = 16.sp
     ),
     // helper
     subtitle1 = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+        fontSize = 13.sp
     ),
     // small
     subtitle2 = TextStyle(
         fontFamily = Nunito,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 11.sp
     ),
 
     /* Other default text styles to override

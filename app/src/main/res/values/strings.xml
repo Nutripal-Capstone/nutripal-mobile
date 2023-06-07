@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">NutriPal</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_nutripal_app">NutripalApp</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_meal">Meal Plan</string>
+    <string name="menu_intakes">Intakes</string>
+    <string name="menu_profile">Profile</string>
+    <string name="title_activity_profile_screen">ProfileScreen</string>
+    <string name="title_activity_analysis_card">AnalysisCard</string>
+    <string name="title_activity_search_bar">SearchBar</string>
+    <string name="title_activity_chips">Chips</string>
+    <string name="title_activity_history_food_card">HistoryFoodCard</string>
+    <string name="title_activity_detail_screen">DetailScreen</string>
 </resources>
