@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +14,69 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NutriPal"
         tools:targetApi="31">
+        <activity
+            android:name=".DetailScreen"
+            android:exported="false"
+            android:label="@string/title_activity_detail_screen"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".HistoryFoodCard"
+            android:exported="false"
+            android:label="@string/title_activity_history_food_card"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".Chips"
+            android:exported="false"
+            android:label="@string/title_activity_chips"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".SearchBar"
+            android:exported="false"
+            android:label="@string/title_activity_search_bar"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".AnalysisCard"
+            android:exported="false"
+            android:label="@string/title_activity_analysis_card"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ProfileScreen"
+            android:exported="false"
+            android:label="@string/title_activity_profile_screen"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".NutripalApp"
+            android:exported="false"
+            android:label="@string/title_activity_nutripal_app"
+            android:theme="@style/Theme.NutriPal">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".HomeActivity"
             android:exported="false"

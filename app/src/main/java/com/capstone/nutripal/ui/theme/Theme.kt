@@ -7,13 +7,13 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = IjoTema,
+    primary = IjoCompo,
     primaryVariant = IjoCompo,
     secondary = BiruMuda
 )
 
 private val LightColorPalette = lightColors(
-    primary = IjoTema,
+    primary = IjoCompo,
     primaryVariant = IjoCompo,
     secondary = BiruMuda
 
