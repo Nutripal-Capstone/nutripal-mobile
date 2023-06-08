@@ -1,6 +1,8 @@
 package com.capstone.nutripal
 
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,12 +18,18 @@ import androidx.compose.material.icons.filled.FoodBank
 import androidx.compose.material.icons.outlined.*
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -42,6 +50,7 @@ import com.capstone.nutripal.ui.theme.IjoTema
 import com.capstone.nutripal.ui.theme.White
 import com.capstone.nutripal.ui.theme.defaultText
 import com.capstone.nutripal.ui.theme.disabledText
+
 
 @Composable
 fun NutripalApp(
@@ -117,7 +126,6 @@ fun NutripalApp(
 
     }
 }
-
 
 @Composable
 private fun BottomBar(

@@ -133,6 +133,7 @@ fun DailyCardAnalysis(
     carbsNeeded: Int,
     fat: Int,
     fatNeeded: Int,
+    isMealPlan : Boolean,
     modifier: Modifier = Modifier,
 ) {
     NutriPalTheme() {
@@ -145,28 +146,28 @@ fun DailyCardAnalysis(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                DailyCardItem("Calorie", calorie, calorieNeeded)
+                DailyCardItem("Calorie", calorie, calorieNeeded, isMealPlan)
                 Divider(
                     color = shadow,
                     modifier = Modifier
                         .height(44.dp)
                         .width(1.5.dp)
                 )
-                DailyCardItem("Protein", protein, proteinNeeded)
+                DailyCardItem("Protein", protein, proteinNeeded, isMealPlan)
                 Divider(
                     color = shadow,
                     modifier = Modifier
                         .height(44.dp)
                         .width(1.5.dp)
                 )
-                DailyCardItem("Carbs", carbs, carbsNeeded)
+                DailyCardItem("Carbs", carbs, carbsNeeded, isMealPlan)
                 Divider(
                     color = shadow,
                     modifier = Modifier
                         .height(44.dp)
                         .width(1.5.dp)
                 )
-                DailyCardItem("Fat", fat, fatNeeded)
+                DailyCardItem("Fat", fat, fatNeeded, isMealPlan)
             }
         }
     }
@@ -177,6 +178,7 @@ fun DailyCardItem(
     title : String,
     now : Int,
     needed : Int,
+    isMealPlan : Boolean,
     modifier: Modifier = Modifier,
 ) {
     val image : Int
@@ -232,11 +234,13 @@ fun DailyCardItem(
                 modifier = Modifier,
                 style = MaterialTheme.typography.body2
             )
-            Text(
-                text = "/$needed",
-                modifier = Modifier.padding(bottom = 2.dp),
-                style = MaterialTheme.typography.subtitle2
-            )
+            if (!isMealPlan) {
+                Text(
+                    text = "/$needed",
+                    modifier = Modifier.padding(bottom = 2.dp),
+                    style = MaterialTheme.typography.subtitle2
+                )
+            }
         }
     }
 }
@@ -246,8 +250,8 @@ fun DailyCardItem(
 fun HomeCardAnalysisPreview() {
     NutriPalTheme {
         Column() {
-            HomeCardAnalysis(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000)
-            DailyCardAnalysis(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000)
+//            HomeCardAnalysis(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000)
+//            DailyCardAnalysis(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000)
         }
     }
 }

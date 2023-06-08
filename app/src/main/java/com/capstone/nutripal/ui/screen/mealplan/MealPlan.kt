@@ -69,7 +69,8 @@ fun MealPlanContent (
                        carbs = 100,
                        carbsNeeded = 1000,
                        fat = 100,
-                       fatNeeded = 1000
+                       fatNeeded = 1000,
+                       isMealPlan = true,
                    )
                    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                    MainCourse(

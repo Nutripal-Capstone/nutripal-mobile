@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.capstone.nutripal'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.capstone.nutripal"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -74,6 +74,6 @@ dependencies {
     // saket swipe, for swipeable component
     implementation "me.saket.swipe:swipe:1.0.0"
 
-
-
+    // status bar
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 }

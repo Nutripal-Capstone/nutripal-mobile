@@ -31,6 +31,7 @@ fun HomeScreen(
     navigateToDetail: (String) -> Unit,
     onSearchbarClicked: () -> Unit,
 ) {
+
     val viewModel: HomeViewModel = viewModel(factory = ViewModelFactory(Injection.provideRepository()))
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {

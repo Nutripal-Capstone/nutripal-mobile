@@ -54,7 +54,8 @@ fun Intakes(
                             carbs = 100,
                             carbsNeeded = 1000,
                             fat = 100,
-                            fatNeeded = 1000
+                            fatNeeded = 1000,
+                            isMealPlan = false
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                         repeat(3) {
