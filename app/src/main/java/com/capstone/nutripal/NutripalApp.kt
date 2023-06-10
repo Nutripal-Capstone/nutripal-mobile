@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.screen.SplashScreen
 import com.capstone.nutripal.ui.screen.home.HomeScreen
+import com.capstone.nutripal.ui.screen.signup.SignupScreen
+import com.capstone.nutripal.ui.screen.welcome.WelcomeScreen
 
 @Composable
 fun NutripalApp(
@@ -23,7 +25,13 @@ fun NutripalApp(
             )
         }
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(name = "world", navController = navController)
+        }
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(navController = navController)
+        }
+        composable(Screen.Signup.route) {
+            SignupScreen()
         }
     }
 }
