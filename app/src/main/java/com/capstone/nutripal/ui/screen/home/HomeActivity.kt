@@ -5,12 +5,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,7 +37,9 @@ fun HomeScreen(
 //    modifier: Modifier = Modifier,
     navigateToDetail: (String) -> Unit,
     onSearchbarClicked: () -> Unit,
+    navigateToMealPlan: () -> Unit,
 ) {
+
     val viewModel: HomeViewModel = viewModel(factory = ViewModelFactory(Injection.provideRepository()))
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -41,7 +50,8 @@ fun HomeScreen(
                 HomeContent(
                     orderFoods = uiState.data,
                     navigateToDetail = navigateToDetail,
-                    onSearchbarClicked
+                    onSearchbarClicked,
+                    onSeeMoreClicked = navigateToMealPlan
                 )
             }
             is UiState.Error -> {}
@@ -55,6 +65,7 @@ fun HomeContent(
     orderFoods: List<OrderFakeFood>,
     navigateToDetail: (String) -> Unit,
     onSearchbarClicked: () -> Unit,
+    onSeeMoreClicked: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
@@ -125,10 +136,36 @@ fun HomeContent(
 
            ) {
                Column(modifier = Modifier.fillMaxWidth()) {
-                   Text(
-                       "Your Next Meal",
-                       style = MaterialTheme.typography.body2
-                   )
+                   Row(
+                       modifier = Modifier
+                           .fillMaxWidth(),
+                       verticalAlignment = Alignment.CenterVertically,
+                       horizontalArrangement = Arrangement.SpaceBetween
+                   ) {
+                       Text(
+                           "Your Next Meal",
+                           style = MaterialTheme.typography.body2
+                       )
+                       Row(
+                           modifier = Modifier.wrapContentSize()
+                               .clickable {
+                                   onSeeMoreClicked()
+                               },
+                           verticalAlignment = Alignment.CenterVertically,
+                       ) {
+                           Text(
+                               "see more",
+                               style = MaterialTheme.typography.subtitle1,
+                               color = disabledText,
+                               textDecoration = TextDecoration.Underline
+                           )
+                           Icon(
+                               imageVector = Icons.Filled.ChevronRight,
+                               tint = disabledText,
+                               contentDescription = "Food Search"
+                           )
+                       }
+                   }
                    Spacer(modifier = Modifier.height(8.dp))
                    for(item: OrderFakeFood in orderFoods) {
                        // kalo belum dimakan masuk sini
@@ -136,7 +173,7 @@ fun HomeContent(
                            HandleCourse(
                                item.food.id,
                                item.food.id,
-                               item.food.photoUrl,
+                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                                item.food.foodTitle,
                                item.food.portion,
                                item.food.isEaten,
@@ -149,10 +186,36 @@ fun HomeContent(
                        }
                    }
                    Spacer(modifier = Modifier.height(16.dp))
-                   Text(
-                       "Eaten Meal",
-                       style = MaterialTheme.typography.body2
-                   )
+                   Row(
+                       modifier = Modifier
+                           .fillMaxWidth(),
+                       verticalAlignment = Alignment.CenterVertically,
+                       horizontalArrangement = Arrangement.SpaceBetween
+                   ) {
+                       Text(
+                           "Eaten Meal",
+                           style = MaterialTheme.typography.body2
+                       )
+                       Row(
+                           modifier = Modifier.wrapContentSize()
+                               .clickable {
+                                   onSeeMoreClicked()
+                               },
+                           verticalAlignment = Alignment.CenterVertically,
+                       ) {
+                           Text(
+                               "see more",
+                               style = MaterialTheme.typography.subtitle1,
+                               color = disabledText,
+                               textDecoration = TextDecoration.Underline
+                           )
+                           Icon(
+                               imageVector = Icons.Filled.ChevronRight,
+                               tint = disabledText,
+                               contentDescription = "Food Search"
+                           )
+                       }
+                   }
                    Spacer(modifier = Modifier.height(8.dp))
                    for(item: OrderFakeFood in orderFoods) {
                        // kalo udah dimakan
@@ -160,7 +223,7 @@ fun HomeContent(
                            HandleCourse(
                                item.food.id,
                                item.food.id,
-                               item.food.photoUrl,
+                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                                item.food.foodTitle,
                                item.food.portion,
                                item.food.isEaten,
@@ -183,6 +246,6 @@ fun HomeContent(
 @Composable
 fun DefaultPreview2() {
     NutriPalTheme {
-        HomeScreen({},{})
+//        HomeScreen({},{})
     }
 }

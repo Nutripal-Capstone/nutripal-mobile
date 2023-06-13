@@ -43,7 +43,7 @@ fun SearchBar(
     hint: String = "",
     isDummy: Boolean,
     onClick: () -> Unit,
-    onSearch: (String) -> Unit = {}
+    onQueryChange: (String) -> Unit,
 ) {
     var text by remember {
         mutableStateOf("")
@@ -80,7 +80,6 @@ fun SearchBar(
                 color = secondText,
                 modifier = Modifier
                     .padding(start = 30.dp)
-
             )
         } else {
             Icon(
@@ -101,7 +100,7 @@ fun SearchBar(
                 value = text,
                 onValueChange = {
                     text = it
-                    onSearch(it)
+                    onQueryChange(it)
                 },
                 enabled = searchBarEnabledState,
                 maxLines = 1,
@@ -130,6 +129,6 @@ fun SearchBar(
 @Composable
 fun SearchBarPrev() {
     NutriPalTheme {
-        SearchBar("what do you want to eat?", isDummy = true, {})
+//        SearchBar("what do you want to eat?", isDummy = true, {})
     }
 }

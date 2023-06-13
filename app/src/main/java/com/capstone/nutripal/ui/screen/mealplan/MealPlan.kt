@@ -5,12 +5,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.capstone.nutripal.ui.components.cards.DailyCardAnalysis
+import com.capstone.nutripal.ui.components.cards.EatenCourse
 import com.capstone.nutripal.ui.components.cards.MainCourse
 import com.capstone.nutripal.ui.theme.NutriPalTheme
 import com.capstone.nutripal.ui.theme.White
@@ -56,7 +58,7 @@ fun MealPlanContent (
                            style = MaterialTheme.typography.body2
                        )
                        Icon(
-                           imageVector = Icons.Filled.Close,
+                           imageVector = Icons.Filled.Refresh,
                            contentDescription = "Food Search",
                        )
                    }
@@ -69,43 +71,42 @@ fun MealPlanContent (
                        carbs = 100,
                        carbsNeeded = 1000,
                        fat = 100,
-                       fatNeeded = 1000
+                       fatNeeded = 1000,
+                       isMealPlan = true,
                    )
                    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
-                   MainCourse(
-                       "Breakfast",
-                       "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+                   EatenCourse(
+                       "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                        "Soto Ayam",
                        "1 portion",
+                       700.0,
+                       700.0,
+                       700.0,
+                       700.0,
                        true,
-                       700.0,
-                       700.0,
-                       700.0,
-                       700.0,
                    )
+
                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                   MainCourse(
-                       "Lunch",
-                       "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+                   EatenCourse(
+                       "w",
                        "Lodho Pisip",
                        "1 portion",
+                       700.0,
+                       700.0,
+                       700.0,
+                       700.0,
                        false,
-                       700.0,
-                       700.0,
-                       700.0,
-                       700.0,
                    )
                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                   MainCourse(
-                       "Dinner",
-                       "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+                   EatenCourse(
+                       "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                        "Warteg",
                        "1 portion",
+                       700.0,
+                       700.0,
+                       700.0,
+                       700.0,
                        false,
-                       700.0,
-                       700.0,
-                       700.0,
-                       700.0,
                    )
                }
            }

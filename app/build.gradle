@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.capstone.nutripal'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.capstone.nutripal"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -37,7 +37,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.4.1'
     }
     packagingOptions {
         resources {
@@ -74,6 +74,15 @@ dependencies {
     // saket swipe, for swipeable component
     implementation "me.saket.swipe:swipe:1.0.0"
 
+    // status bar
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 
+    // api
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
+
+    // material3
+    implementation 'androidx.compose.material3:material3:1.1.0-alpha05'
 
 }
