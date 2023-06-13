@@ -29,7 +29,7 @@ fun SplashScreen(navController: NavHostController) {
 
     val context = LocalContext.current
     val dataStore = StoreDataUser(context)
-    val userToken = dataStore.getUserToken().collectAsState(initial = "")
+    val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
 
     // Delay for 2 seconds and navigate to the next screen
     LaunchedEffect(key1 = true) {
