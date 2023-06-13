@@ -14,15 +14,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.offset
 import coil.compose.AsyncImage
 import com.capstone.nutripal.ui.components.badges.NutritionalChips
 import com.capstone.nutripal.ui.components.badges.StatusChips
+import com.capstone.nutripal.ui.components.general.FlowRow
 import com.capstone.nutripal.ui.theme.*
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
+import kotlin.math.roundToInt
 
 @Composable
 fun HandleCourse(
@@ -76,7 +83,7 @@ fun HandleCourse(
         if(eatStatus) {
             println("eaten")
             EatenCourse(
-                image = image,
+                image = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                 foodTitle = foodTitle,
                 portion = portion,
                 cal = cal,
@@ -86,24 +93,39 @@ fun HandleCourse(
                 modifier = Modifier.clickable {
                     navigateToDetail(foodId)
                     println(foodId)
-                }
+                },
+                isEaten = true
             )
         } else if(!eatStatus) {
             println("not eaten")
-            MainCourse(
-                cardTitle = cardTitle,
-                image = image,
+            EatenCourse(
+                image = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                 foodTitle = foodTitle,
                 portion = portion,
-                isEaten = isEaten,
                 cal = cal,
                 pro = pro,
                 carbs= carbs,
                 fat = fat,
                 modifier = Modifier.clickable {
                     navigateToDetail(foodId)
-                }
+                    println(foodId)
+                },
+                isEaten = false
             )
+//            MainCourse(
+//                cardTitle = cardTitle,
+//                image = image,
+//                foodTitle = foodTitle,
+//                portion = portion,
+//                isEaten = isEaten,
+//                cal = cal,
+//                pro = pro,
+//                carbs= carbs,
+//                fat = fat,
+//                modifier = Modifier.clickable {
+//                    navigateToDetail(foodId)
+//                }
+//            )
         }
     }
 
@@ -221,30 +243,10 @@ fun MainCourse(
                             )
                         }
                         Spacer(modifier = Modifier.weight(1.0f))
-//                        LazyVerticalGrid(
-//                            columns = GridCells.Adaptive(61.dp),
-//                            verticalArrangement = Arrangement.spacedBy(4.dp),
-//                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-//                            content = {
-//                                val listOfChips = listOf(
-//                                    "Cal",
-//                                    "Car",
-//                                    "Pro",
-//                                    "Fat"
-//                                )
-//                                val listOfValues = listOf(
-//                                    700,
-//                                    700,
-//                                    700,
-//                                    700
-//                                )
-//                                items(4) { i ->
-//                                    NutritionalChips(listOfChips[i], listOfValues[i])
-//                                }
-//                            }
-//                        )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        FlowRow(
+                            horizontalGap = 4.dp,
+                            verticalGap = 4.dp,
+                            alignment = Alignment.Start,
                         ) {
                             NutritionalChips("Cal", cal)
                             NutritionalChips("Pro", pro)
@@ -267,6 +269,7 @@ fun EatenCourse(
     pro : Double,
     carbs: Double,
     fat : Double,
+    isEaten: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // dropdown more
@@ -335,7 +338,9 @@ fun EatenCourse(
                                 verticalAlignment = Alignment.CenterVertically,
 
                                 ) {
-                                StatusChips(title = "Eaten")
+                                if (isEaten) {
+                                    StatusChips(title = "Eaten")
+                                }
                                 Spacer(modifier = Modifier.width(4.dp))
 
                                 // for the dropdown
@@ -364,30 +369,10 @@ fun EatenCourse(
 
                         }
                         Spacer(modifier = Modifier.weight(1.0f))
-//                            LazyVerticalGrid(
-//                                columns = GridCells.Adaptive(67.dp),
-//                                verticalArrangement = Arrangement.spacedBy(4.dp),
-//                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-//                                content = {
-//                                    val listOfChips = listOf(
-//                                        "Cal",
-//                                        "Car",
-//                                        "Pro",
-//                                        "Fat"
-//                                    )
-//                                    val listOfValues = listOf(
-//                                        700,
-//                                        700,
-//                                        700,
-//                                        700
-//                                    )
-//                                    items(4) { i ->
-//                                        NutritionalChips(listOfChips[i], listOfValues[i])
-//                                    }
-//                                }
-//                            )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        FlowRow(
+                            horizontalGap = 4.dp,
+                            verticalGap = 4.dp,
+                            alignment = Alignment.Start,
                         ) {
                             NutritionalChips("Cal", cal)
                             NutritionalChips("Pro", pro)

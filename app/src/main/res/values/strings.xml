@@ -13,4 +13,8 @@
     <string name="title_activity_chips">Chips</string>
     <string name="title_activity_history_food_card">HistoryFoodCard</string>
     <string name="title_activity_detail_screen">DetailScreen</string>
+    <string name="title_activity_flow_row">FlowRow</string>
+    <string name="title_activity_dialogs">Dialogs</string>
+    <string name="title_activity_shimmer_list_item">ShimmerListItem</string>
+    <string name="title_activity_shimmer_food_card">ShimmerFoodCard</string>
 </resources>

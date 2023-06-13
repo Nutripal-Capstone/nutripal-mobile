@@ -46,10 +46,8 @@ import com.capstone.nutripal.ui.screen.intakes.Intakes
 import com.capstone.nutripal.ui.screen.mealplan.MealPlan
 import com.capstone.nutripal.ui.screen.profile.ProfileScreen
 import com.capstone.nutripal.ui.screen.search.SearchScreen
-import com.capstone.nutripal.ui.theme.IjoTema
-import com.capstone.nutripal.ui.theme.White
-import com.capstone.nutripal.ui.theme.defaultText
-import com.capstone.nutripal.ui.theme.disabledText
+import com.capstone.nutripal.ui.theme.*
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
@@ -75,6 +73,13 @@ fun NutripalApp(
         },
         modifier = modifier
     ) { innerPadding ->
+        val systemUiController = rememberSystemUiController()
+        SideEffect {
+            systemUiController.setStatusBarColor(
+                color = if (currentRoute == Screen.Home.route) IjoCompo else Color.Transparent,
+                darkIcons = currentRoute != Screen.Home.route,
+            )
+        }
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
@@ -83,15 +88,16 @@ fun NutripalApp(
             composable(Screen.Home.route) {
                 HomeScreen(
                     navigateToDetail = { foodId ->
-                        navController.navigate(Screen.DetailPage.createRoute(foodId))
+//                        navController.navigate(Screen.DetailPage.createRoute(foodId))
                     },
                     onSearchbarClicked = {
                         navController.navigate(Screen.SearchPage.route)
-                    }
-
-//                    navigateToDetail = { rewardId ->
-//                        navController.navigate(Screen.DetailReward.createRoute(rewardId))
-//                    }
+                    },
+                    navigateToMealPlan = {
+                        navController.navigate(Screen.MealPlan.route){
+                            popUpTo("home") { inclusive = true }
+                        }
+                    },
                 )
             }
             composable(Screen.MealPlan.route) {
@@ -108,15 +114,23 @@ fun NutripalApp(
                     onBackClick = {
                         navController.navigateUp()
                     },
+                    navigateToDetail = { foodId, foodServingId ->
+                        navController.navigate(Screen.DetailPage.createRoute(foodId, foodServingId))
+                    },
                 )
             }
             composable(
                 route = Screen.DetailPage.route,
-                arguments = listOf(navArgument("foodId") { type = NavType.LongType }),
+                arguments = listOf(
+                    navArgument("foodId") { type = NavType.LongType },
+                    navArgument("foodServingId") { type = NavType.LongType }
+                ),
             ) {
                 val id = it.arguments?.getLong("foodId") ?: -1L
+                val servingId = it.arguments?.getLong("foodServingId") ?: -1L
                 DetailScreen(
                     foodId = id.toString(),
+                    servingId = servingId.toString(),
                     navigateBack = {
                         navController.navigateUp()
                     },

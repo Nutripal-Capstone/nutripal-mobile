@@ -22,6 +22,7 @@ import coil.compose.AsyncImage
 import com.capstone.nutripal.model.FakeFoodClass
 import com.capstone.nutripal.ui.components.badges.NutritionalChips
 import com.capstone.nutripal.ui.components.badges.StatusChips
+import com.capstone.nutripal.ui.components.general.FlowRow
 import com.capstone.nutripal.ui.theme.*
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -94,7 +95,6 @@ fun SelectableCourse(
                         verticalAlignment = Alignment.CenterVertically,
 
                         ) {
-                        // icon di sini
                         Icon(
                             imageVector = Icons.Filled.CheckCircle,
                             contentDescription = "check",
@@ -140,8 +140,10 @@ fun SelectableCourse(
                             )
                         }
                         Spacer(modifier = Modifier.weight(1.0f))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        FlowRow(
+                            horizontalGap = 4.dp,
+                            verticalGap = 4.dp,
+                            alignment = Alignment.Start,
                         ) {
                             NutritionalChips("Cal", cal)
                             NutritionalChips("Pro", pro)
@@ -264,6 +266,17 @@ fun SelectableFoodCardPreview() {
                 fat = 700.0,
                 carbs = 700.0,
                 selected = true
+            )
+            SelectableCourse(
+                id = "1",
+                image = "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+                foodTitle = "soto",
+                portion = "1 portion",
+                cal = 700.0,
+                pro = 700.0,
+                fat = 700.0,
+                carbs = 700.0,
+                selected = false
             )
 //            EatenDisabledCourse(
 //                "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",

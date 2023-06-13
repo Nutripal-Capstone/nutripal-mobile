@@ -13,13 +13,31 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.capstone.nutripal.ui.screen.detail.DetailContent
 import com.capstone.nutripal.ui.theme.NutriPalTheme
 
 @Composable
 fun TableGizi (
-
-) {
+    serving_description : String,
+    calories: Int?,
+    fat: Double?,
+    saturated_fat: Double?,
+    trans_fat: Double?,
+    polyunsaturated_fat: Double?,
+    monounsaturated_fat: Double?,
+    cholesterol: Int?,
+    carbohydrates: Double?,
+    protein: Double?,
+    sodium: Int?,
+    potassium: Int?,
+    fiber: Double?,
+    sugar: Double?,
+    added_sugars:  Double?,
+    vitamin_d:  Double?,
+    vitamin_a:  Int?,
+    vitamin_c: Double?,
+    calcium: Int?,
+    iron: Double?,
+    ) {
     Column(
         modifier = Modifier
             .border(1.dp, Color.Gray, RectangleShape)
@@ -31,68 +49,97 @@ fun TableGizi (
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             SpaceBetweenItem(
-                "Ukuran Porsi",
-                "1 Nugget"
+                "Serving Size",
+                serving_description
             )
             Divider(Modifier, Color.LightGray, 12.dp)
             RightOnlyItem(
-                "Per porsi"
+                "Per portion"
             )
             Divider(Modifier, Color.LightGray, 6.dp)
             SpaceBetweenItem(
-                "Energi",
-                "199 kj"
+                "Calories",
+                calories.toString()
             )
-            RightOnlyItem("48 kkal")
+//            RightOnlyItem("48 kkal")
             Divider(Modifier, Color.LightGray, 3.dp)
             SpaceBetweenItem(
-                "Lemak",
-                "3,01 g"
+                "Fat",
+                "$fat g"
             )
             PaddedSpaceBetweenItem(
-                "Lemak Jenuh",
-                "0,644 g"
+                "Saturated Fat",
+                "$saturated_fat g"
             )
             PaddedSpaceBetweenItem(
-                "Lemak tak Jenuh Ganda",
-                "0,851 g"
+                "Trans Fat",
+                "$trans_fat g"
             )
             PaddedSpaceBetweenItem(
-                "Lemak tak Jenuh Tunggal",
-                "1,276 g"
+                "Polyunsaturated Fat",
+                "$polyunsaturated_fat g"
+            )
+            PaddedSpaceBetweenItem(
+                "Monounsaturated Fat",
+                "$monounsaturated_fat g"
             )
             Divider(Modifier, Color.LightGray, 3.dp)
             SpaceBetweenItem(
-                "Kolesterol",
-                "9 mg"
+                "Cholesterol",
+                "$cholesterol mg"
             )
             Divider(Modifier, Color.LightGray, 3.dp)
             SpaceBetweenItem(
                 "Protein",
-                "2,49 g"
+                "$protein g"
             )
             Divider(Modifier, Color.LightGray, 3.dp)
             SpaceBetweenItem(
-                "Karbohidrat",
-                "2,61 g"
+                "Total Carbohydrates",
+                "$carbohydrates g"
             )
             PaddedSpaceBetweenItem(
-                "Serat",
-                "0,644 g"
+                "Fiber",
+                "$fiber g"
             )
             PaddedSpaceBetweenItem(
-                "Gula",
-                "0,851 g"
+                "Sugar",
+                "$sugar g"
+            )
+            PaddedSpaceBetweenItem(
+                "Added Sugar",
+                "$added_sugars g"
             )
             Divider(Modifier, Color.LightGray, 3.dp)
             SpaceBetweenItem(
                 "Sodium",
-                "2,61 g"
+                "$sodium mg"
             )
             Divider(Modifier, Color.LightGray, 3.dp)
             SpaceBetweenItem(
-                "Kalium",
-                "2,61 g"
+                "Potassium",
+                "$potassium mg"
+            )
+            Divider(Modifier, Color.LightGray, 3.dp)
+            SpaceBetweenItem(
+                "Vitamin A",
+                "$vitamin_a mcg"
+            )
+            SpaceBetweenItem(
+                "Vitamin C",
+                "$vitamin_c mcg"
+            )
+            SpaceBetweenItem(
+                "Vitamin D",
+                "$vitamin_d mcg"
+            )
+            SpaceBetweenItem(
+                "Calcium",
+                "$calcium mg"
+            )
+            SpaceBetweenItem(
+                "Iron",
+                "$iron mg"
             )
             Divider(Modifier, Color.LightGray, 6.dp)
         }
@@ -165,6 +212,6 @@ fun RightOnlyItem(
 @Composable
 fun TableContentPreview() {
     NutriPalTheme {
-        TableGizi()
+//        TableGizi()
     }
 }

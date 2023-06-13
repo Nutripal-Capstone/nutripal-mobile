@@ -59,11 +59,11 @@ fun Intakes(
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                         repeat(3) {
-                            HistoryFoodCard(
-                                "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
-                                "Soto Ayam",
-                                "1 portion"
-                            )
+//                            HistoryFoodCard(
+//                                "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+//                                "Soto Ayam",
+//                                "1 portion"
+//                            )
                             Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                         }
                     }
