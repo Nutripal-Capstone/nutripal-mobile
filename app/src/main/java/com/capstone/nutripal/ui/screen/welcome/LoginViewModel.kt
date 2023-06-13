@@ -68,44 +68,5 @@ class LoginViewModel(private val dataUser: StoreDataUser) : ViewModel() {
                 Log.e("LoginViewModel", "onFailure: failed to fetch data")
             }
         })
-//            val response = ApiConfig.getApiService().getLogin(token)
-//            println("ini response message: ${response.message}")
-//            if (response.success) {
-//                // save the token from api to datastore
-//                viewModelScope.launch {
-//                    dataUser.login(token)
-//                    dataUser.saveJwt(response.data?.token)
-//                }
-//                _result.value = "success"
-//            } else {
-//                if (response.message == "User is not yet registered.") {
-//                    // navigate to form page
-//                    _result.value = "register"
-//                    println("ini result private: ${_result.value}")
-//                    println("ini result biasa: ${result.value}")
-//                } else {
-//                    // back to login page
-//                    _result.value = "fail"
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.w("LoginViewModel", "onFailure: ${e.message}")
-//
-//        }
-
     }
-
-    fun signUp() {
-
-    }
-
-//    fun signWithCredential(credential: AuthCredential) = viewModelScope.launch {
-//        try {
-//            loadingState.emit(LoadingState.LOADING)
-//            Firebase.auth.signInWithCredential(credential).await()
-//            loadingState.emit(LoadingState.LOADED)
-//        } catch (e: Exception) {
-//            loadingState.emit(LoadingState.error(e.localizedMessage))
-//        }
-//    }
 }
