@@ -125,12 +125,12 @@ fun HorizontalPagerWithIndicator(
                     }
                 } else {
                     // Authentication failed
-                    Log.w("GoogleSignIn", "failed sign in");
+                    Log.w("GoogleSignIn", "failed sign in")
                 }
             }
         } catch (e: ApiException) {
             // Google sign-in failed
-            Log.w("GoogleSignIn", "onFailure: ${e.message}");
+            Log.w("GoogleSignIn", "onFailure: ${e.message}")
         }
     }
 
@@ -159,7 +159,7 @@ fun HorizontalPagerWithIndicator(
                 HorizontalPager(
                     count = pageCount,
                     state = pagerState,
-                    modifier = Modifier.wrapContentHeight(),
+                    modifier = Modifier.height(500.dp),
                 ) { page ->
                     Column(
                         modifier = Modifier
@@ -178,7 +178,7 @@ fun HorizontalPagerWithIndicator(
                             text = items[page].title,
                             textAlign = TextAlign.Center,
                             fontSize = 21.sp,
-                            fontWeight = FontWeight(700)
+                            fontWeight = FontWeight(700),
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
@@ -205,6 +205,7 @@ fun HorizontalPagerWithIndicator(
                             .size(40.dp)
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
                 if (pagerState.currentPage == items.size - 1) {
                     Button(
                         onClick = {
@@ -236,6 +237,7 @@ fun HorizontalPagerWithIndicator(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(59.dp))
             }
         }
     }
