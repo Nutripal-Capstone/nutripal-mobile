@@ -1,5 +1,7 @@
 package com.capstone.nutripal.ui.screen.profile
 
+import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.model.ProfileData
+import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.components.general.shimmerEffect
@@ -35,8 +39,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
+    context: Context = LocalContext.current as ComponentActivity,
+    dataStore: StoreDataUser = StoreDataUser(context),
     profileViewModel: ProfileViewModel = viewModel(
-        factory = ViewModelFactory(FakeFoodRepository())
+        factory = ViewModelFactory(dataStore, FakeFoodRepository())
     ),
     ) {
     profileViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->

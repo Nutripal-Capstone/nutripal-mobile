@@ -1,9 +1,24 @@
 package com.capstone.nutripal
 
+import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.capstone.nutripal.model.StoreDataUser
+import com.capstone.nutripal.ui.ViewModelFactory
+import com.capstone.nutripal.ui.navigation.Screen
+import com.capstone.nutripal.ui.screen.SplashScreen
+import com.capstone.nutripal.ui.screen.home.HomeScreen
+import com.capstone.nutripal.ui.screen.signup.*
+import com.capstone.nutripal.ui.screen.welcome.WelcomeScreen
+
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -17,7 +32,6 @@ import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.FoodBank
 import androidx.compose.material.icons.outlined.*
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,15 +45,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.ui.navigation.NavigationItem
-import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.screen.detail.DetailScreen
 import com.capstone.nutripal.ui.screen.home.HomeScreen
 import com.capstone.nutripal.ui.screen.intakes.Intakes
@@ -49,12 +62,15 @@ import com.capstone.nutripal.ui.screen.search.SearchScreen
 import com.capstone.nutripal.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-
 @Composable
 fun NutripalApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    val context = LocalContext.current as ComponentActivity
+    val dataStore = StoreDataUser(context)
+    val viewModelFactory = ViewModelFactory(dataStore, Injection.provideRepository())
+    val signupViewModel: SignupViewModel = viewModel(factory = viewModelFactory)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -66,7 +82,7 @@ fun NutripalApp(
                 Screen.Intakes.route,
                 Screen.Profile.route,
             )
-            if(currentRoute in hasNavbars) {
+            if (currentRoute in hasNavbars) {
                 BottomBar(navController)
             }
 
@@ -82,9 +98,29 @@ fun NutripalApp(
         }
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Splash.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Screen.Splash.route) {
+                SplashScreen(
+                    navController = navController
+                )
+            }
+            composable(Screen.Welcome.route) {
+                WelcomeScreen(navController = navController)
+            }
+            composable(Screen.Signup.route) {
+                SignupScreen(navController = navController, signupViewModel = signupViewModel)
+            }
+            composable(Screen.SecondSignup.route) {
+                SecondSignupScreen(navController = navController, signupViewModel = signupViewModel)
+            }
+            composable(Screen.ThirdSignup.route) {
+                ThirdSignupScreen(navController = navController, signupViewModel = signupViewModel)
+            }
+            composable(Screen.FourthSignup.route) {
+                FourthSignupScreen(navController = navController, signupViewModel = signupViewModel)
+            }
             composable(Screen.Home.route) {
                 HomeScreen(
                     navigateToDetail = { foodId ->
@@ -94,7 +130,7 @@ fun NutripalApp(
                         navController.navigate(Screen.SearchPage.route)
                     },
                     navigateToMealPlan = {
-                        navController.navigate(Screen.MealPlan.route){
+                        navController.navigate(Screen.MealPlan.route) {
                             popUpTo("home") { inclusive = true }
                         }
                     },
@@ -137,7 +173,6 @@ fun NutripalApp(
                 )
             }
         }
-
     }
 }
 

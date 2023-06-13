@@ -1,5 +1,7 @@
 package com.capstone.nutripal.ui.screen.detail
 
+import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -23,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -35,6 +38,7 @@ import coil.compose.AsyncImage
 import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.model.DataDetail
 import com.capstone.nutripal.model.ProfileData
+import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.components.cards.Dialogs
@@ -47,9 +51,11 @@ import kotlinx.coroutines.launch
 fun DetailScreen(
     foodId: String,
     servingId: String,
+    context: Context = LocalContext.current as ComponentActivity,
+    dataStore: StoreDataUser = StoreDataUser(context),
     viewModel: DetailPageViewModel = viewModel(
         factory = ViewModelFactory(
-            Injection.provideRepository()
+            dataStore, Injection.provideRepository()
         )
     ),
     navigateBack: () -> Unit,
