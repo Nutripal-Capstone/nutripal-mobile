@@ -25,4 +25,10 @@ interface ApiService {
     suspend fun getProfileDetail(
         @Header("Authorization") token: String
     ): ProfileResponse
+
+    @GET("tracker/history")
+    suspend fun getIntakesHistory(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int
+    ): ProfileResponse
 }

@@ -31,6 +31,10 @@ import com.capstone.nutripal.ui.components.badges.StatusChips
 import com.capstone.nutripal.ui.components.cards.HandleCourse
 import com.capstone.nutripal.ui.theme.*
 import com.capstone.nutripal.ui.theme.NutriPalTheme
+import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Composable
 fun HomeScreen(

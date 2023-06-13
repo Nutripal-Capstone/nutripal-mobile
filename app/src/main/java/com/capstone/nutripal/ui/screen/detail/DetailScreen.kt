@@ -151,15 +151,15 @@ fun DetailContent(
         LazyColumn(modifier = Modifier) {
             item {
                 Box {
-//                    AsyncImage(
-//                        model = image,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .aspectRatio(1.5f)
-//                            .shadow(2.dp)
-//                    )
+                    AsyncImage(
+                        model = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1.5f)
+                            .shadow(2.dp)
+                    )
                     Row (
                         modifier = Modifier
                             .fillMaxWidth()
@@ -282,7 +282,6 @@ fun DetailContent(
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         androidx.compose.material3.Button(
                                             onClick = {
-                                                openDialog.value = false
                                             },
                                             modifier = Modifier.fillMaxWidth(),
                                             colors = androidx.compose.material3.ButtonDefaults.buttonColors(
@@ -298,6 +297,7 @@ fun DetailContent(
                                         Spacer(modifier = Modifier.width(6.dp))
                                         TextButton(
                                             onClick = {
+                                                openDialog.value = false
                                             },
                                             modifier = Modifier.fillMaxWidth()
                                         ) {

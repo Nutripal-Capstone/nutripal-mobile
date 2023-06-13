@@ -88,7 +88,7 @@ fun MealPlanContent (
 
                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                    EatenCourse(
-                       "w",
+                       "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                        "Lodho Pisip",
                        "1 portion",
                        700.0,
