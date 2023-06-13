@@ -27,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.capstone.nutripal.R
+import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.navigation.Screen
@@ -71,7 +72,7 @@ fun HorizontalPagerWithIndicator(
     context: Context = LocalContext.current,
     dataStore: StoreDataUser = StoreDataUser(context),
     loginViewModel: LoginViewModel = viewModel(
-        factory = ViewModelFactory(dataStore)
+        factory = ViewModelFactory(dataStore, FakeFoodRepository())
     ),
 ) {
     val scope = rememberCoroutineScope()
