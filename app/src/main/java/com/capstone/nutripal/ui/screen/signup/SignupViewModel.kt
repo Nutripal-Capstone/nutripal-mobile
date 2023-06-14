@@ -37,13 +37,9 @@ class SignupViewModel(private val dataUser: StoreDataUser) : ViewModel() {
     val age = _age.asStateFlow()
 
     private val _activityLevel = MutableStateFlow("")
-    val activityLevel = _activityLevel.asStateFlow()
 
     private val _goal = MutableStateFlow("")
     val goal = _goal.asStateFlow()
-
-    private val _mealsPerDay = MutableStateFlow("")
-    val mealsPerDay = _mealsPerDay.asStateFlow()
 
     fun saveFirstSignupSection(
         name: String,
@@ -59,12 +55,10 @@ class SignupViewModel(private val dataUser: StoreDataUser) : ViewModel() {
     fun saveSecondSignupSection(
         height: String,
         weight: String,
-        mealsPerDay: String,
         goal: String
     ) {
         _height.value = height
         _weight.value = weight
-        _mealsPerDay.value = mealsPerDay
         _goal.value = goal
     }
 
@@ -79,7 +73,7 @@ class SignupViewModel(private val dataUser: StoreDataUser) : ViewModel() {
         dietType: String
     ) {
         val registerRequest = RegisterRequest(_name.value, _height.value.toInt(), _weight.value.toInt(),
-            _gender.value, _age.value.toInt(), _activityLevel.value, _goal.value, _mealsPerDay.value.toInt(), dietType)
+            _gender.value, _age.value.toInt(), _activityLevel.value, _goal.value, dietType)
         val client = ApiConfig.getApiService().postRegister(token, registerRequest)
         client.enqueue(object : Callback<DefaultResponse> {
             override fun onResponse(
