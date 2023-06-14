@@ -198,7 +198,6 @@ private fun BottomBar(
             modifier = modifier,
             backgroundColor = White,
         ){
-            println(currentRoute)
             navigationItems.map { item ->
                 BottomNavigationItem(
                     icon = {
