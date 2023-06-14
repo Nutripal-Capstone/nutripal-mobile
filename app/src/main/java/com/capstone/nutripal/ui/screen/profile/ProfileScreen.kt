@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.capstone.nutripal.R
 import com.capstone.nutripal.data.FakeFoodRepository
+import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.model.ProfileData
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
@@ -49,26 +50,25 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current as ComponentActivity,
-    dataStore: StoreDataUser = StoreDataUser(context),
-    profileViewModel: ProfileViewModel = viewModel(
-        factory = ViewModelFactory(dataStore, FakeFoodRepository())
-    ),
+    context: Context,
+    dataStore: StoreDataUser,
+    profileViewModel: ProfileViewModel,
     navController: NavController,
     ) {
     val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
     profileViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
-                ProfileContent(ProfileData(), true, navController = navController)
+                ProfileContent(ProfileData(), true, navController = navController,
+                    dataStore = dataStore, context = context)
                 profileViewModel.viewModelScope.launch {
                     profileViewModel.getProfileDetail(userToken.value)
                 }
             }
             is UiState.Success -> {
                 val data = uiState.data
-                ProfileContent(data, false, navController = navController)
+                ProfileContent(data, false, navController = navController,
+                    dataStore = dataStore, context = context)
             }
             is UiState.Error -> {}
         }
@@ -82,10 +82,10 @@ fun ProfileContent(
     loading : Boolean,
     modifier: Modifier = Modifier,
     navController: NavController,
+    context: Context,
+    dataStore: StoreDataUser,
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val dataStore = StoreDataUser(context)
     
     val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(context.getString(R.string.default_web_client_id))
@@ -243,7 +243,12 @@ fun BodyInfoItem(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
+    val context = LocalContext.current as ComponentActivity
+    val dataStore = StoreDataUser(context)
+    val profileViewModel: ProfileViewModel = viewModel(
+        factory = ViewModelFactory(dataStore, Injection.provideRepository()))
     NutriPalTheme {
-        ProfileScreen(navController = rememberNavController())
+        ProfileScreen(navController = rememberNavController(), dataStore = dataStore,
+            profileViewModel = profileViewModel, context = context)
     }
 }

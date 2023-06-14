@@ -1,11 +1,6 @@
 package com.capstone.nutripal.api
 
-import com.capstone.nutripal.model.DefaultResponse
-import com.capstone.nutripal.model.LoginResponse
-import com.capstone.nutripal.model.RegisterRequest
-import com.capstone.nutripal.model.DetailResponse
-import com.capstone.nutripal.model.ProfileResponse
-import com.capstone.nutripal.model.SearchResponse
+import com.capstone.nutripal.model.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -27,6 +22,7 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body registerRequest: RegisterRequest
     ): Call<DefaultResponse>
+
     @GET("food/search")
     suspend fun getSearchFoodList(
         @Header("Authorization") token: String,
@@ -45,4 +41,10 @@ interface ApiService {
     suspend fun getProfileDetail(
         @Header("Authorization") token: String
     ): ProfileResponse
+
+    @GET("tracker/history")
+    suspend fun getIntakes(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int
+    ): IntakesResponse
 }
