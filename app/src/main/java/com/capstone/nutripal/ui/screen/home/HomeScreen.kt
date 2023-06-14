@@ -1,32 +1,19 @@
 package com.capstone.nutripal.ui.screen.home
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.capstone.nutripal.R
 import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
-import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.theme.NutriPalTheme
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,16 +21,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.capstone.nutripal.model.OrderFakeFood
 import com.capstone.nutripal.ui.components.cards.HomeCardAnalysis
 import com.capstone.nutripal.ui.components.general.SearchBar
@@ -57,17 +39,9 @@ fun HomeScreen(
     navigateToDetail: (String) -> Unit,
     onSearchbarClicked: () -> Unit,
     navigateToMealPlan: () -> Unit,
+    context: Context = LocalContext.current,
+    dataStore: StoreDataUser = StoreDataUser(context)
 ) {
-
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val dataStore = StoreDataUser(context)
-
-//    val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//        .requestIdToken(context.getString(R.string.default_web_client_id))
-//        .requestEmail()
-//        .build()
-//    val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
 
     val viewModel: HomeViewModel = viewModel(factory = ViewModelFactory(dataStore, Injection.provideRepository()))
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -175,7 +149,8 @@ fun HomeContent(
                             style = MaterialTheme.typography.body2
                         )
                         Row(
-                            modifier = Modifier.wrapContentSize()
+                            modifier = Modifier
+                                .wrapContentSize()
                                 .clickable {
                                     onSeeMoreClicked()
                                 },
@@ -225,7 +200,8 @@ fun HomeContent(
                             style = MaterialTheme.typography.body2
                         )
                         Row(
-                            modifier = Modifier.wrapContentSize()
+                            modifier = Modifier
+                                .wrapContentSize()
                                 .clickable {
                                     onSeeMoreClicked()
                                 },
@@ -266,63 +242,6 @@ fun HomeContent(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun Greeting2(
-    name: String,
-    navController: NavController
-) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val dataStore = StoreDataUser(context)
-
-    val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build()
-    val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
-
-    Column() {
-        Text(
-            text = "Hello $name!",
-            style = MaterialTheme.typography.h1
-        )
-        Text(
-            text = "Hello $name!",
-            style = MaterialTheme.typography.body1
-        )
-        Text(
-            text = "Hello $name!",
-            style = MaterialTheme.typography.body2
-        )
-        Text(
-            text = "Hello $name!",
-            style = MaterialTheme.typography.subtitle1
-        )
-        Text(
-            text = "Hello $name!",
-            style = MaterialTheme.typography.subtitle2
-        )
-        Button(
-            onClick = {
-                scope.launch {
-//                    Firebase.auth.signOut()
-                    googleSignInClient.signOut().await()
-                    dataStore.logout()
-                }
-                navController.popBackStack()
-                navController.navigate(Screen.Welcome.route)
-            },
-            shape = RoundedCornerShape(27.dp),
-            contentPadding = PaddingValues(horizontal = 150.dp)
-        ) {
-            Text(
-                text= "Logout",
-                fontWeight = FontWeight(700)
-            )
         }
     }
 }
