@@ -1,5 +1,6 @@
 package com.capstone.nutripal.ui.screen.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -22,18 +24,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.capstone.nutripal.R
 import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.model.ProfileData
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.components.general.shimmerEffect
+import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.theme.IjoCompo
 import com.capstone.nutripal.ui.theme.NutriPalTheme
 import com.capstone.nutripal.ui.theme.White
 import com.capstone.nutripal.ui.theme.secondText
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 @Composable
@@ -44,32 +55,44 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = viewModel(
         factory = ViewModelFactory(dataStore, FakeFoodRepository())
     ),
+    navController: NavController,
     ) {
+    val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
     profileViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
-                ProfileContent(ProfileData(), true)
+                ProfileContent(ProfileData(), true, navController = navController)
                 profileViewModel.viewModelScope.launch {
-                    profileViewModel.getProfileDetail()
+                    profileViewModel.getProfileDetail(userToken.value)
                 }
             }
             is UiState.Success -> {
                 val data = uiState.data
-                ProfileContent(data, false)
+                ProfileContent(data, false, navController = navController)
             }
             is UiState.Error -> {}
-            else -> {}
         }
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProfileContent(
     data: ProfileData,
     loading : Boolean,
     modifier: Modifier = Modifier,
+    navController: NavController,
 ) {
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val dataStore = StoreDataUser(context)
+    
+    val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+    val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -101,13 +124,17 @@ fun ProfileContent(
                     Text(
                         text = data.name.toString(),
                         style = MaterialTheme.typography.body2,
-                        modifier = if (loading) Modifier.shimmerEffect().fillMaxWidth() else Modifier
+                        modifier = if (loading) Modifier
+                            .shimmerEffect()
+                            .fillMaxWidth() else Modifier
                     )
                     Spacer(modifier = Modifier.height(3.dp))
                     Text(
                         text = data.email.toString(),
                         style = MaterialTheme.typography.body1,
-                        modifier = if (loading) Modifier.shimmerEffect().fillMaxWidth() else Modifier
+                        modifier = if (loading) Modifier
+                            .shimmerEffect()
+                            .fillMaxWidth() else Modifier
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedButton(
@@ -162,7 +189,15 @@ fun ProfileContent(
             }
             Spacer(modifier = Modifier.weight(1.0f))
             OutlinedButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        Firebase.auth.signOut()
+                        googleSignInClient.signOut().await()
+                        dataStore.logout()
+                    }
+                    navController.popBackStack()
+                    navController.navigate(Screen.Welcome.route)
+                },
                 shape = RoundedCornerShape(27.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colors.error),
                 modifier = Modifier.fillMaxWidth(),
@@ -209,6 +244,6 @@ fun BodyInfoItem(
 @Composable
 fun DefaultPreview2() {
     NutriPalTheme {
-        ProfileScreen()
+        ProfileScreen(navController = rememberNavController())
     }
 }
