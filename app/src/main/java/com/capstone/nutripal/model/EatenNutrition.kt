@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName
 data class EatenNutrition(
 
     @field:SerializedName("protein")
-    val protein: Double,
+    val protein: Double = 0.0,
 
     @field:SerializedName("fat")
-    val fat: Double,
+    val fat: Double = 0.0,
 
     @field:SerializedName("calories")
-    val calories: Double,
+    val calories: Double = 0.0,
 
     @field:SerializedName("carbohydrate")
-    val carbohydrate: Double
+    val carbohydrate: Double = 0.0
 )

@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import coil.compose.AsyncImage
+import com.capstone.nutripal.model.FakeFoodClass
+import com.capstone.nutripal.model.FoodItem
+import com.capstone.nutripal.model.OrderFakeFood
 import com.capstone.nutripal.ui.components.badges.NutritionalChips
 import com.capstone.nutripal.ui.components.badges.StatusChips
 import com.capstone.nutripal.ui.components.general.FlowRow
@@ -33,6 +36,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun HandleCourse(
+    objFood: FoodItem,
     foodId : String,
     cardTitle : String,
     image : String,
@@ -43,7 +47,9 @@ fun HandleCourse(
     pro : Double,
     carbs: Double,
     fat : Double,
-    navigateToDetail : (String) -> Unit
+    navigateToDetail : (String) -> Unit,
+    onSwipeEat: (FoodItem) -> Unit,
+    onSwipeUneat: (FoodItem) -> Unit,
 ) {
     var eatStatus by rememberSaveable { mutableStateOf(isEaten) }
     val makan = SwipeAction(
@@ -56,7 +62,8 @@ fun HandleCourse(
         background = IjoCompo,
         onSwipe = {
             eatStatus = true
-            println("makan" + eatStatus)
+//            println("makan" + eatStatus)
+            onSwipeEat(objFood)
         }
     )
     val unmakan = SwipeAction(
@@ -70,7 +77,8 @@ fun HandleCourse(
         isUndo = true,
         onSwipe = {
             eatStatus = false
-            println("unmakan" + eatStatus)
+//            println("unmakan" + eatStatus)
+            onSwipeUneat(objFood)
         },
     )
 

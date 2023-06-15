@@ -26,12 +26,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.lifecycle.viewModelScope
+import com.capstone.nutripal.model.FakeFoodClass
+import com.capstone.nutripal.model.FoodItem
 import com.capstone.nutripal.model.OrderFakeFood
 import com.capstone.nutripal.ui.components.cards.HomeCardAnalysis
 import com.capstone.nutripal.ui.components.general.SearchBar
 import com.capstone.nutripal.ui.components.badges.StatusChips
 import com.capstone.nutripal.ui.components.cards.HandleCourse
 import com.capstone.nutripal.ui.theme.*
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -40,35 +45,26 @@ fun HomeScreen(
     onSearchbarClicked: () -> Unit,
     navigateToMealPlan: () -> Unit,
     context: Context = LocalContext.current,
-    dataStore: StoreDataUser = StoreDataUser(context)
+    dataStore: StoreDataUser = StoreDataUser(context),
+    homeViewModel: HomeViewModel = viewModel(factory = ViewModelFactory(dataStore, Injection.provideRepository()))
 ) {
+    val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
 
-    val viewModel: HomeViewModel = viewModel(factory = ViewModelFactory(dataStore, Injection.provideRepository()))
-    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when (uiState) {
-            is UiState.Loading -> {
-                viewModel.getAllFoods()
-            }
-            is UiState.Success -> {
-                HomeContent(
-                    orderFoods = uiState.data,
-                    navigateToDetail = navigateToDetail,
-                    onSearchbarClicked,
-                    onSeeMoreClicked = navigateToMealPlan
-                )
-            }
-            is UiState.Error -> {}
-        }
+    val resultEatenFoods by homeViewModel.resultEatenFoods.collectAsState()
+    val resultMealPlans by homeViewModel.resultMealPlans.collectAsState()
+    val resultEatenNutrition by homeViewModel.resultEatenNutrition.collectAsState()
+    val resultNutritionGoal by homeViewModel.resultNutritionGoal.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        if (userToken.value != "") homeViewModel.getAllFoods(userToken.value)
     }
-}
 
-@Composable
-fun HomeContent(
-    orderFoods: List<OrderFakeFood>,
-    navigateToDetail: (String) -> Unit,
-    onSearchbarClicked: () -> Unit,
-    onSeeMoreClicked: () -> Unit,
-) {
+    println("UNEATEN FOODS IN HOME")
+    println(resultMealPlans)
+
+    println("EATEN FOODS IN HOME")
+    println(resultEatenFoods)
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -118,14 +114,14 @@ fun HomeContent(
                             .fillMaxWidth()
                             .height(5.dp))
                         HomeCardAnalysis(
-                            calorie = 100,
-                            calorieNeeded = 1000,
-                            protein = 100,
-                            proteinNeeded = 1000,
-                            carbs = 100,
-                            carbsNeeded = 1000,
-                            fat = 100,
-                            fatNeeded = 1000
+                            calorie = resultEatenNutrition.calories.toInt(),
+                            calorieNeeded = resultNutritionGoal.calorieGoal,
+                            protein = resultEatenNutrition.protein.toInt(),
+                            proteinNeeded = resultNutritionGoal.proteinGoal,
+                            carbs = resultEatenNutrition.carbohydrate.toInt(),
+                            carbsNeeded = resultNutritionGoal.carbohydrateGoal,
+                            fat = resultEatenNutrition.fat.toInt(),
+                            fatNeeded = resultNutritionGoal.fatGoal
                         )
                     }
                 }
@@ -152,7 +148,7 @@ fun HomeContent(
                             modifier = Modifier
                                 .wrapContentSize()
                                 .clickable {
-                                    onSeeMoreClicked()
+                                    navigateToMealPlan()
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -170,23 +166,28 @@ fun HomeContent(
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    for(item: OrderFakeFood in orderFoods) {
+                    resultMealPlans?.forEach { foodItem ->
                         // kalo belum dimakan masuk sini
-                        if(!item.food.isEaten) {
-                            HandleCourse(
-                                item.food.id,
-                                item.food.id,
-                                "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                                item.food.foodTitle,
-                                item.food.portion,
-                                item.food.isEaten,
-                                item.food.calorie,
-                                item.food.protein,
-                                item.food.carbs,
-                                item.food.fat,
-                                navigateToDetail = navigateToDetail
-                            )
-                        }
+                        HandleCourse(
+                            foodItem,
+                            foodItem.foodId,
+                            foodItem.id.toString(),
+                            "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                            foodItem.foodName,
+                            foodItem.servingDescription,
+                            false,
+                            foodItem.calories,
+                            foodItem.protein,
+                            foodItem.carbohydrate,
+                            foodItem.fat,
+                            navigateToDetail = navigateToDetail,
+                            onSwipeEat = { food ->
+                                homeViewModel.onEaten(food)
+                            },
+                            onSwipeUneat = { food ->
+                                homeViewModel.onUneaten(food)
+                            }
+                        )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
@@ -203,7 +204,7 @@ fun HomeContent(
                             modifier = Modifier
                                 .wrapContentSize()
                                 .clickable {
-                                    onSeeMoreClicked()
+                                    navigateToMealPlan()
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -221,24 +222,29 @@ fun HomeContent(
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    for(item: OrderFakeFood in orderFoods) {
-                        // kalo udah dimakan
-                        if(item.food.isEaten) {
-                            HandleCourse(
-                                item.food.id,
-                                item.food.id,
-                                "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                                item.food.foodTitle,
-                                item.food.portion,
-                                item.food.isEaten,
-                                item.food.calorie,
-                                item.food.protein,
-                                item.food.carbs,
-                                item.food.fat,
-                                navigateToDetail = navigateToDetail
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
+                    resultEatenFoods?.forEach { foodItem ->
+                        // kalo udah dimakan masuk sini
+                        HandleCourse(
+                            foodItem,
+                            foodItem.foodId,
+                            foodItem.id.toString(),
+                            "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                            foodItem.foodName,
+                            foodItem.servingDescription,
+                            false,
+                            foodItem.calories,
+                            foodItem.protein,
+                            foodItem.carbohydrate,
+                            foodItem.fat,
+                            navigateToDetail = navigateToDetail,
+                            onSwipeEat = { food ->
+                                homeViewModel.onEaten(food)
+                            },
+                            onSwipeUneat = { food ->
+                                homeViewModel.onUneaten(food)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }

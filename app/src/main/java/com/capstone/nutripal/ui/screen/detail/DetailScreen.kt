@@ -116,19 +116,19 @@ fun DetailContent(
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 repeat(3) {
-                    HandleCourse(
-                        "1",
-                        "Breakfast",
-                        "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
-                        "Soto Ayam",
-                        "1 portion",
-                        false,
-                        700.0,
-                        700.0,
-                        700.0,
-                        700.0,
-                        {}
-                    )
+//                    HandleCourse(
+//                        "1",
+//                        "Breakfast",
+//                        "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+//                        "Soto Ayam",
+//                        "1 portion",
+//                        false,
+//                        700.0,
+//                        700.0,
+//                        700.0,
+//                        700.0,
+//                        {}
+//                    )
                     Spacer(modifier = Modifier.height(6.dp))
                 }
                 Text(

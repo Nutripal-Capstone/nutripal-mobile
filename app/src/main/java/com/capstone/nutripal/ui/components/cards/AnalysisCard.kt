@@ -47,13 +47,13 @@ fun HomeCardAnalysis(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     HomeCardItem("Calorie", calorie, calorieNeeded)
-                    HomeCardItem("Carbohydrate", calorie, calorieNeeded)
+                    HomeCardItem("Carbohydrate", carbs, carbsNeeded)
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    HomeCardItem("Protein", calorie, calorieNeeded)
-                    HomeCardItem("Fat", calorie, calorieNeeded)
+                    HomeCardItem("Protein", protein, proteinNeeded)
+                    HomeCardItem("Fat", fat, fatNeeded)
                 }
             }
 //        }

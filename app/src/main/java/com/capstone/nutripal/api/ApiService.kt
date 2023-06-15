@@ -47,4 +47,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Query("page") page: Int
     ): IntakesResponse
+
+    @GET("tracker")
+    suspend fun getMainTracker(
+        @Header("Authorization") token: String,
+    ): TrackerResponse
 }

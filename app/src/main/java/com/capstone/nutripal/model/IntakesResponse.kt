@@ -59,14 +59,14 @@ data class DataIntakes(
 data class NutritionGoal(
 
 	@field:SerializedName("calorieGoal")
-	val calorieGoal: Int,
+	val calorieGoal: Int = 0,
 
 	@field:SerializedName("carbohydrateGoal")
-	val carbohydrateGoal: Int,
+	val carbohydrateGoal: Int = 0,
 
 	@field:SerializedName("fatGoal")
-	val fatGoal: Int,
+	val fatGoal: Int = 0,
 
 	@field:SerializedName("proteinGoal")
-	val proteinGoal: Int
+	val proteinGoal: Int = 0
 )
