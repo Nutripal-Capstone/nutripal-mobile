@@ -34,6 +34,7 @@ import com.capstone.nutripal.ui.theme.NutriPalTheme
 import com.capstone.nutripal.ui.theme.White
 import kotlinx.coroutines.launch
 import androidx.lifecycle.lifecycleScope
+import com.capstone.nutripal.ui.components.general.MealPlanNotFound
 import com.capstone.nutripal.ui.theme.secondText
 import com.capstone.nutripal.ui.theme.shadow
 import kotlinx.coroutines.launch
@@ -48,6 +49,7 @@ fun MealPlan(
         factory = ViewModelFactory(dataStore, FakeFoodRepository())
     ),
     navigateToDetail: (String, String) -> Unit,
+    onFindSomeFood: () -> Unit,
 ) {
     mealPlanViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -58,7 +60,9 @@ fun MealPlan(
             }
             is UiState.Success -> {
                 val data = uiState.data
-                MealPlanContent(data, mealPlanViewModel, navigateToDetail)
+                println("ini data meal plan")
+                println(data.mealPlan)
+                MealPlanContent(data, mealPlanViewModel, navigateToDetail, onFindSomeFood)
             }
             is UiState.Error -> {}
             else -> {}
@@ -66,12 +70,14 @@ fun MealPlan(
     }
 }
 
+
 @SuppressLint("StateFlowValueCalledInComposition", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MealPlanContent (
     data: DataDayTracker,
     mealPlanViewModel: MealPlanViewModel,
     navigateToDetail: (String, String) -> Unit,
+    onFindSomeFood: () -> Unit,
 ) {
 
     val isMenuOpen = remember { mutableStateOf(false) }
@@ -94,7 +100,8 @@ fun MealPlanContent (
                     },
        ) {
            LazyColumn(
-               modifier = Modifier.fillMaxWidth()
+               modifier = Modifier
+                   .fillMaxWidth()
                    .padding(16.dp)
            ) {
                item() {
@@ -132,7 +139,9 @@ fun MealPlanContent (
                           }
                       }
                    }
-                   Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                   Spacer(modifier = Modifier
+                       .fillMaxWidth()
+                       .height(5.dp))
                    DailyCardAnalysis(
                        calorie = 10.0,
                        calorieNeeded = 0.0,
@@ -144,220 +153,244 @@ fun MealPlanContent (
                        fatNeeded = 0.0,
                        isMealPlan = true,
                    )
-                   Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
-                   Text(
-                       "Breakfast",
-                       style = MaterialTheme.typography.body2
-                   )
-                   for (item in data.mealPlan?.breakfast!!) {
-                      if (item != null) {
-                          HandleCourse(
-                              item.foodId.toString(),
-                              item.foodId.toString(),
-                              "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                              item.foodName.toString(),
-                              item.servingDescription.toString(),
-                              false,
-                              item.calories.toString(),
-                              item.protein.toString(),
-                              item.carbohydrate.toString(),
-                              item.fat.toString(),
-                              navigateToDetail = {
-                                  item.foodId?.let { it1 -> item.servingId?.let { it2 ->
-                                      navigateToDetail(it1,
-                                          it2
-                                      )
-                                  } }
-                              },
-                              onEat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
-                              },
-                              onUneat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
-                              },
-                              onDelete = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
-                              }
+                   Spacer(modifier = Modifier
+                       .fillMaxWidth()
+                       .height(10.dp))
+                   if (data.mealPlan?.breakfast?.size === 0 && data.mealPlan.dinner?.size === 0 && data.mealPlan.dinner?.size === 0) {
+                       MealPlanNotFound(
+                           onClickRecommend = {},
+                           onAddSomeFood = {onFindSomeFood()}
+                       )
+                       Spacer(modifier = Modifier
+                           .fillMaxWidth()
+                           .height(20.dp))
+                   } else {
+                       Text(
+                           "Breakfast",
+                           style = MaterialTheme.typography.body2
+                       )
+                       for (item in data.mealPlan?.breakfast!!) {
+                          if (item != null) {
+                              HandleCourse(
+                                  item.foodId.toString(),
+                                  item.foodId.toString(),
+                                  "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                  item.foodName.toString(),
+                                  item.servingDescription.toString(),
+                                  false,
+                                  item.calories.toString(),
+                                  item.protein.toString(),
+                                  item.carbohydrate.toString(),
+                                  item.fat.toString(),
+                                  navigateToDetail = {
+                                      item.foodId?.let { it1 -> item.servingId?.let { it2 ->
+                                          navigateToDetail(it1,
+                                              it2
+                                          )
+                                      } }
+                                  },
+                                  onEat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
+                                  },
+                                  onUneat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
+                                  },
+                                  onDelete = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
+                                  }
 
 
-                          )
+                              )
+                          }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
                       }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                  }
-                   for (item in data.eatenFood?.breakfast!!) {
-                       if (item != null) {
-                           HandleCourse(
-                               item.foodId.toString(),
-                               item.foodId.toString(),
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName.toString(),
-                               item.servingDescription.toString(),
-                               true,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = {
-                                   item.foodId?.let { it1 -> item.servingId?.let { it2 ->
-                                       navigateToDetail(it1,
-                                           it2
-                                       )
-                                   } }
-                               },
-                               onEat = {
-                                   item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
-                               },
-                               onUneat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
-                              },
-                               onDelete = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
-                              }
-                           )
+                       for (item in data.eatenFood?.breakfast!!) {
+                           if (item != null) {
+                               HandleCourse(
+                                   item.foodId.toString(),
+                                   item.foodId.toString(),
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName.toString(),
+                                   item.servingDescription.toString(),
+                                   true,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = {
+                                       item.foodId?.let { it1 -> item.servingId?.let { it2 ->
+                                           navigateToDetail(it1,
+                                               it2
+                                           )
+                                       } }
+                                   },
+                                   onEat = {
+                                       item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
+                                   },
+                                   onUneat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
+                                  },
+                                   onDelete = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
+                                  }
+                               )
+                           }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
                        }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                   }
-                   Text(
-                       "Lunch",
-                       style = MaterialTheme.typography.body2
-                   )
-                   for (item in data.mealPlan?.lunch!!) {
-                       if (item != null) {
-                           HandleCourse(
-                               item.foodId.toString(),
-                               item.foodId.toString(),
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName.toString(),
-                               item.servingDescription.toString(),
-                               false,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = {
-                                   item.foodId?.let { it1 -> item.servingId?.let { it2 ->
-                                       navigateToDetail(it1,
-                                           it2
-                                       )
-                                   } }
-                               },
-                               onEat = {
-                                   item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
-                               },
-                               onUneat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
-                              },
-                               onDelete = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
-                              }
-                           )
+                       Text(
+                           "Lunch",
+                           style = MaterialTheme.typography.body2
+                       )
+                       for (item in data.mealPlan?.lunch!!) {
+                           if (item != null) {
+                               HandleCourse(
+                                   item.foodId.toString(),
+                                   item.foodId.toString(),
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName.toString(),
+                                   item.servingDescription.toString(),
+                                   false,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = {
+                                       item.foodId?.let { it1 -> item.servingId?.let { it2 ->
+                                           navigateToDetail(it1,
+                                               it2
+                                           )
+                                       } }
+                                   },
+                                   onEat = {
+                                       item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
+                                   },
+                                   onUneat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
+                                  },
+                                   onDelete = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
+                                  }
+                               )
+                           }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
                        }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                   }
-                   for (item in data.eatenFood?.lunch!!) {
-                       if (item != null) {
-                           HandleCourse(
-                               item.foodId.toString(),
-                               item.foodId.toString(),
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName.toString(),
-                               item.servingDescription.toString(),
-                               true,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = {
-                                   item.foodId?.let { it1 -> item.servingId?.let { it2 ->
-                                       navigateToDetail(it1,
-                                           it2
-                                       )
-                                   } }
-                               },
-                               onEat = {
-                                   item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
-                               },
-                               onUneat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
-                              },
-                               onDelete = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
-                              }
-                           )
+                       for (item in data.eatenFood?.lunch!!) {
+                           if (item != null) {
+                               HandleCourse(
+                                   item.foodId.toString(),
+                                   item.foodId.toString(),
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName.toString(),
+                                   item.servingDescription.toString(),
+                                   true,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = {
+                                       item.foodId?.let { it1 -> item.servingId?.let { it2 ->
+                                           navigateToDetail(it1,
+                                               it2
+                                           )
+                                       } }
+                                   },
+                                   onEat = {
+                                       item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
+                                   },
+                                   onUneat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
+                                  },
+                                   onDelete = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
+                                  }
+                               )
+                           }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
                        }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                   }
 
-                   Text(
-                       "Dinner",
-                       style = MaterialTheme.typography.body2
-                   )
-                   for (item in data.mealPlan?.dinner!!) {
-                       if (item != null) {
-                           HandleCourse(
-                               item.foodId.toString(),
-                               item.foodId.toString(),
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName.toString(),
-                               item.servingDescription.toString(),
-                               false,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = {
-                                   item.foodId?.let { it1 -> item.servingId?.let { it2 ->
-                                       navigateToDetail(it1,
-                                           it2
-                                       )
-                                   } }
-                               },
-                               onEat = {
-                                   item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
-                               },
-                               onUneat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
-                              },
-                               onDelete = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
-                              }
-                           )
+                       Text(
+                           "Dinner",
+                           style = MaterialTheme.typography.body2
+                       )
+                       for (item in data.mealPlan?.dinner!!) {
+                           if (item != null) {
+                               HandleCourse(
+                                   item.foodId.toString(),
+                                   item.foodId.toString(),
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName.toString(),
+                                   item.servingDescription.toString(),
+                                   false,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = {
+                                       item.foodId?.let { it1 -> item.servingId?.let { it2 ->
+                                           navigateToDetail(it1,
+                                               it2
+                                           )
+                                       } }
+                                   },
+                                   onEat = {
+                                       item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
+                                   },
+                                   onUneat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
+                                  },
+                                   onDelete = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
+                                  }
+                               )
+                           }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
                        }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                   }
 
-                   for (item in data.eatenFood?.dinner!!) {
-                       if (item != null) {
-                           HandleCourse(
-                               item.foodId.toString(),
-                               item.foodId.toString(),
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName.toString(),
-                               item.servingDescription.toString(),
-                               true,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = {
-                                   item.foodId?.let { it1 -> item.servingId?.let { it2 ->
-                                       navigateToDetail(it1,
-                                           it2
-                                       )
-                                   } }
-                               },
-                               onEat = {
-                                   item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
-                               },
-                               onUneat = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
-                              },
-                               onDelete = {
-                                  item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
-                              }
-                           )
+                       for (item in data.eatenFood?.dinner!!) {
+                           if (item != null) {
+                               HandleCourse(
+                                   item.foodId.toString(),
+                                   item.foodId.toString(),
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName.toString(),
+                                   item.servingDescription.toString(),
+                                   true,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = {
+                                       item.foodId?.let { it1 -> item.servingId?.let { it2 ->
+                                           navigateToDetail(it1,
+                                               it2
+                                           )
+                                       } }
+                                   },
+                                   onEat = {
+                                       item.id?.let { it1 -> mealPlanViewModel.postEatenFood(it1) }
+                                   },
+                                   onUneat = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteEatenFood(it1) }
+                                  },
+                                   onDelete = {
+                                      item.id?.let { it1 -> mealPlanViewModel.deleteFoodFromMealPlan(it1) }
+                                  }
+                               )
+                           }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
                        }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                    }
                }
            }
