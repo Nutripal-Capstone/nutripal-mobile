@@ -61,8 +61,10 @@ fun ProfileScreen(
             is UiState.Loading -> {
                 ProfileContent(ProfileData(), true, navController = navController,
                     dataStore = dataStore, context = context)
-                profileViewModel.viewModelScope.launch {
-                    profileViewModel.getProfileDetail(userToken.value)
+                if (userToken.value != "") {
+                    profileViewModel.viewModelScope.launch {
+                        profileViewModel.getProfileDetail(userToken.value)
+                    }
                 }
             }
             is UiState.Success -> {

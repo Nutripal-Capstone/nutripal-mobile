@@ -19,7 +19,6 @@ class ProfileViewModel : ViewModel(){
         try {
             val response = ApiConfig.getApiService().getProfileDetail(
                 "Bearer $token")
-            _uiState.value = UiState.Loading
             _uiState.value = UiState.Success(response.data as ProfileData)
         } catch (e: Exception) {
             Log.w("ProfileViewModel", "onFailure: ${e.message}")
