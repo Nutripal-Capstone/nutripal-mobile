@@ -19,7 +19,7 @@ class ProfileViewModel : ViewModel(){
     suspend fun getProfileDetail(token: String) {
         try {
             val response = ApiConfig.getApiService().getProfileDetail(
-                "Bearer $token")
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFkaGFtIEtoYWxpZCIsImVtYWlsIjoicmlja3lhbnRvd21AZ21haWwuY29tIiwiaWF0IjoxNjg2NzQwOTIzLCJleHAiOjE2ODkzMzI5MjN9.iXeNxh5LzM39XkHVoWmukd1rmVeBFLWX_f7TH04896A")
             _uiState.value = UiState.Loading
             _uiState.value = UiState.Success(response.data as ProfileData)
         } catch (e: Exception) {

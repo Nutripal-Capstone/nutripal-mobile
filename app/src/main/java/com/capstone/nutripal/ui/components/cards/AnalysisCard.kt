@@ -125,14 +125,14 @@ fun HomeCardItem(
 
 @Composable
 fun DailyCardAnalysis(
-    calorie: Double,
-    calorieNeeded: Double,
-    protein: Double,
-    proteinNeeded: Double,
-    carbs: Double,
-    carbsNeeded: Double,
-    fat: Double,
-    fatNeeded: Double,
+    calorie: String,
+    calorieNeeded: String,
+    protein: String,
+    proteinNeeded: String,
+    carbs: String,
+    carbsNeeded: String,
+    fat: String,
+    fatNeeded: String,
     isMealPlan : Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -176,8 +176,8 @@ fun DailyCardAnalysis(
 @Composable
 fun DailyCardItem(
     title: String,
-    now: Double,
-    needed: Double,
+    now: String,
+    needed: String,
     isMealPlan: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -230,7 +230,7 @@ fun DailyCardItem(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = "$now",
+                text = "$now ${if (isMealPlan) "g" else ""}",
                 modifier = Modifier,
                 style = MaterialTheme.typography.body2
             )

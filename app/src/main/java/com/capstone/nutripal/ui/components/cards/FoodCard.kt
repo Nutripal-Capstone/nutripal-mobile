@@ -287,12 +287,11 @@ fun EatenCourse(
 ) {
     // dropdown more
     val isMenuOpen = remember { mutableStateOf(false) }
-    val menuItemsMealPlan = listOf("Re-generate", "Eat", "Delete")
+    val menuItemsMealPlan = listOf("Eat", "Delete")
     val menuItemsEaten = listOf("Un-Eat")
     val selectedItem = remember { mutableStateOf("") }
 
     when(selectedItem.value) {
-        ("Re-generate") -> {}
         ("Eat") -> {
             onEat()
             selectedItem.value = ""

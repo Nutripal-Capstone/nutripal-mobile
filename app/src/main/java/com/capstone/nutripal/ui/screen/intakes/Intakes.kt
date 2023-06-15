@@ -1,5 +1,6 @@
 package com.capstone.nutripal.ui.screen.intakes
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
@@ -15,6 +16,7 @@ import com.capstone.nutripal.ui.theme.NutriPalTheme
 import com.capstone.nutripal.ui.theme.White
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Intakes(
     modifier: Modifier = Modifier
@@ -47,14 +49,14 @@ fun Intakes(
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                         DailyCardAnalysis(
-                            calorie = 100.0,
-                            calorieNeeded = 1000.0,
-                            protein = 100.0,
-                            proteinNeeded = 1000.0,
-                            carbs = 100.0,
-                            carbsNeeded = 1000.0,
-                            fat = 100.0,
-                            fatNeeded = 1000.0,
+                            calorie = "100.0",
+                            calorieNeeded = "1000.0",
+                            protein = "100.0",
+                            proteinNeeded = "1000.0",
+                            carbs = "100.0",
+                            carbsNeeded = "1000.0",
+                            fat = "100.0",
+                            fatNeeded = "1000.0",
                             isMealPlan = false
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))

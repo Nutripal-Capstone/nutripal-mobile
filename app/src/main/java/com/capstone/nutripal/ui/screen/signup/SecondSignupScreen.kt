@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.screen.welcome.NutripalTopAppBar
+import com.capstone.nutripal.ui.theme.IjoCompo
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -146,7 +147,10 @@ fun SecondSignupScreen(
                     }
                 },
                 shape = RoundedCornerShape(27.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = IjoCompo,
+                )
             ) {
                 Text(
                     text = "Next",

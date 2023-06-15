@@ -30,6 +30,22 @@ data class NutritionGoal(
 )
 
 
+data class WholeGoal(
+
+	@field:SerializedName("calories")
+	val calories: Double? = 0.0,
+
+	@field:SerializedName("carbohydrate")
+	val carbohydrate: Double? = 0.0,
+
+	@field:SerializedName("fat")
+	val fat: Double? = 0.0,
+
+	@field:SerializedName("protein")
+	val protein: Double? = 0.0
+)
+
+
 data class EatenFood(
 
 	@field:SerializedName("lunch")
@@ -94,7 +110,13 @@ data class DataDayTracker(
 	val eatenFood: EatenFood? = null,
 
 	@field:SerializedName("nutritionGoal")
-	val nutritionGoal: NutritionGoal? = null,
+	val nutritionGoal: NutritionGoal,
+
+	@field:SerializedName("eatenNutrition")
+	val eatenNutrition: WholeGoal,
+
+	@field:SerializedName("wholeNutrition")
+	val wholeNutrition: WholeGoal,
 
 	@field:SerializedName("mealPlan")
 	val mealPlan: MealPlan? = null

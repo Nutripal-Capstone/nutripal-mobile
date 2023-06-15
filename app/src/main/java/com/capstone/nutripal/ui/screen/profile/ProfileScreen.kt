@@ -138,7 +138,9 @@ fun ProfileContent(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedButton(
-                        onClick = {},
+                        onClick = {
+                            navController.navigate(Screen.EditProfile.route)
+                        },
                         shape = RoundedCornerShape(27.dp),
                         border = BorderStroke(1.dp, IjoCompo),
                         modifier = Modifier.fillMaxWidth(),

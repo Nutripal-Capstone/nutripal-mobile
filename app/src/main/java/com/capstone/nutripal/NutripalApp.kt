@@ -38,6 +38,7 @@ import com.capstone.nutripal.ui.navigation.NavigationItem
 import com.capstone.nutripal.ui.screen.detail.DetailScreen
 import com.capstone.nutripal.ui.screen.intakes.Intakes
 import com.capstone.nutripal.ui.screen.mealplan.MealPlan
+import com.capstone.nutripal.ui.screen.profile.EditProfileScreen
 import com.capstone.nutripal.ui.screen.profile.ProfileScreen
 import com.capstone.nutripal.ui.screen.search.SearchScreen
 import com.capstone.nutripal.ui.theme.*
@@ -133,6 +134,9 @@ fun NutripalApp(
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(navController = navController)
+            }
+            composable(Screen.EditProfile.route) {
+                EditProfileScreen(navController = navController)
             }
             composable(Screen.SearchPage.route) {
                 SearchScreen(

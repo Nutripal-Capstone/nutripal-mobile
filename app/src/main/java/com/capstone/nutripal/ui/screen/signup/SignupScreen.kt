@@ -252,6 +252,7 @@ fun RequiredTextField(
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(0.dp)
             .onFocusChanged {
                 hasFocus = it.isFocused
                 if (!hasFocus) {
