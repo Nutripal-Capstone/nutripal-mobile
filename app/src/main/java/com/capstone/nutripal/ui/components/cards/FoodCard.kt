@@ -68,7 +68,6 @@ fun HandleCourse(
         ) },
         background = IjoCompo,
         onSwipe = {
-            onSwipeEat(objFood)
             eatFunction()
         }
     )
@@ -82,7 +81,6 @@ fun HandleCourse(
         background = Color.Red,
         isUndo = true,
         onSwipe = {
-            onSwipeUneat(objFood)
             unEatFunction()
         },
     )
