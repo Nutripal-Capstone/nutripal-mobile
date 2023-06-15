@@ -10,11 +10,23 @@ import kotlinx.coroutines.flow.map
 class FakeFoodRepository {
 
     private val orderFakeFood = mutableListOf<OrderFakeFood>()
+    private val fakeEatenFood = mutableListOf<FakeFoodClass>()
+    private val fakeUneatenFood = mutableListOf<FakeFoodClass>()
 
     init {
         if (orderFakeFood.isEmpty()) {
             FakeFoodData.listOfFoods.forEach {
                 orderFakeFood.add(OrderFakeFood(it, 0))
+            }
+        }
+        if (fakeEatenFood.isEmpty()) {
+            FakeFoodData.listOfFoodsEaten.forEach {
+                fakeEatenFood.add(it)
+            }
+        }
+        if (fakeUneatenFood.isEmpty()) {
+            FakeFoodData.listOfFoodsNotEaten.forEach {
+                fakeUneatenFood.add(it)
             }
         }
     }
@@ -23,24 +35,13 @@ class FakeFoodRepository {
         return flowOf(orderFakeFood)
     }
 
-    fun getOrderFakeFoodById(foodId: String): OrderFakeFood {
-        return orderFakeFood.first {
-            it.food.id == foodId
-        }
+    fun getAllEatenFoods(): Flow<List<FakeFoodClass>> {
+        return flowOf(fakeEatenFood)
     }
 
-//    fun updateOrderFakeFood(rewardId: Long, newCountValue: Int): Flow<Boolean> {
-//        val index = orderFakeFood.indexOfFirst { it.reward.id == rewardId }
-//        val result = if (index >= 0) {
-//            val orderReward = orderFakeFood[index]
-//            orderFakeFood[index] =
-//                orderReward.copy(reward = orderReward.reward, count = newCountValue)
-//            true
-//        } else {
-//            false
-//        }
-//        return flowOf(result)
-//    }
+    fun getAllUneatenFoods(): Flow<List<FakeFoodClass>> {
+        return flowOf(fakeUneatenFood)
+    }
 
 //    fun getAddedOrderFakeFoods(): Flow<List<OrderFakeFood>> {
 //        return getAllRewards()
