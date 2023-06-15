@@ -31,12 +31,6 @@ fun SecondSignupScreen(
     var height by remember { mutableStateOf(signupViewModel.height.value) }
     var weight by remember { mutableStateOf(signupViewModel.weight.value) }
 
-    var mealsPerDay by remember { mutableStateOf(signupViewModel.mealsPerDay.value) }
-    val mealsOptions = listOf("1", "2", "3", "4")
-    var expandedMeals by remember { mutableStateOf(false) }
-    var mealsHasFocus by remember { mutableStateOf(false) }
-    var mealsHasError by remember { mutableStateOf(false) }
-
     var goal by remember { mutableStateOf(signupViewModel.goal.value) }
     val goalOptions = listOf("Lose Weight", "Maintain Weight", "Gain Weight")
     var expandedGoal by remember { mutableStateOf(false) }
@@ -142,68 +136,12 @@ fun SecondSignupScreen(
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(11.dp))
-            ExposedDropdownMenuBox(
-                expanded = expandedMeals,
-                onExpandedChange = {
-                    expandedMeals = !expandedMeals
-                },
-            ) {
-                TextField(
-                    readOnly = true,
-                    value = mealsPerDay,
-                    onValueChange = { },
-                    label = { Text("Meals per Day") },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = expandedMeals
-                        )
-                    },
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
-                        .onFocusChanged {
-                            mealsHasFocus = it.isFocused
-                            if (!mealsHasFocus) {
-                                mealsHasError = mealsPerDay.isEmpty()
-                            }
-                        },
-                    isError = showError and mealsHasError,
-                    colors = nutripalAppTextFieldColors()
-                )
-                ExposedDropdownMenu(
-                    expanded = expandedMeals,
-                    onDismissRequest = {
-                        expandedMeals = false
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    mealsOptions.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            onClick = {
-                                mealsPerDay = selectionOption
-                                expandedMeals = false
-                                mealsHasError = mealsPerDay.isEmpty()
-                            }
-                        ){
-                            Text(text = selectionOption)
-                        }
-                    }
-                }
-            }
-            if (showError && mealsHasError) {
-                Text(
-                    text = "Meals per day is required",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
                     showError = true
-                    if (height.isNotEmpty() && weight.isNotEmpty() && mealsPerDay.isNotEmpty()) {
-                        signupViewModel.saveSecondSignupSection(height, weight, mealsPerDay, goal)
+                    if (height.isNotEmpty() && weight.isNotEmpty()) {
+                        signupViewModel.saveSecondSignupSection(height, weight, goal)
                         navController.navigate(Screen.ThirdSignup.route)
                     }
                 },

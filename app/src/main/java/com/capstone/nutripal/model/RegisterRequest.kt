@@ -25,9 +25,6 @@ data class RegisterRequest(
 	@field:SerializedName("goal")
 	val goal: String,
 
-	@field:SerializedName("mealsPerDay")
-	val mealsPerDay: Int,
-
 	@field:SerializedName("dietType")
 	val dietType: String,
 )

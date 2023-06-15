@@ -1,12 +1,7 @@
 package com.capstone.nutripal.ui.screen.welcome
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.capstone.nutripal.api.ApiConfig
 import com.capstone.nutripal.model.DefaultResponse
@@ -26,14 +21,6 @@ class LoginViewModel(private val dataUser: StoreDataUser) : ViewModel() {
     private val _result = MutableStateFlow("")
     val result = _result.asStateFlow()
 
-    fun getUserToken(): LiveData<String> {
-        return dataUser.getUserToken().asLiveData()
-    }
-
-    fun getUserJwtToken(): LiveData<String> {
-        return dataUser.getUserJwtToken().asLiveData()
-    }
-
     suspend fun signIn(token: String) {
         val client = ApiConfig.getApiService().getLogin(token)
         client.enqueue(object : Callback<LoginResponse> {
@@ -46,6 +33,7 @@ class LoginViewModel(private val dataUser: StoreDataUser) : ViewModel() {
                         dataUser.login(token)
                         dataUser.saveJwt(response.body()?.data?.token)
                     }
+                    _result.value = "success"
                 } else {
                     if (response.code() == 401) {
                         val gson = Gson()
