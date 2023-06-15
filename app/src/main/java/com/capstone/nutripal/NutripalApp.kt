@@ -123,6 +123,9 @@ fun NutripalApp(
                     navigateToDetail = { foodId, foodServingId ->
                         navController.navigate(Screen.DetailPage.createRoute(foodId, foodServingId))
                     },
+                    onFindSomeFood = {
+                        navController.navigate(Screen.SearchPage.route)
+                    },
                 )
             }
             composable(Screen.Intakes.route) {
