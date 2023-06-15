@@ -20,11 +20,23 @@ class HomeViewModel : ViewModel() {
     private val _resultMealPlans: MutableStateFlow<MutableList<FoodItem>?> = MutableStateFlow(null)
     val resultMealPlans = _resultMealPlans.asStateFlow()
 
-    private val _resultEatenNutrition: MutableStateFlow<EatenNutrition> = MutableStateFlow(EatenNutrition())
-    val resultEatenNutrition = _resultEatenNutrition.asStateFlow()
+//    private val _resultEatenNutrition: MutableStateFlow<EatenNutrition> = MutableStateFlow(EatenNutrition())
+//    val resultEatenNutrition = _resultEatenNutrition.asStateFlow()
 
     private val _resultNutritionGoal: MutableStateFlow<NutritionGoal> = MutableStateFlow(NutritionGoal())
     val resultNutritionGoal = _resultNutritionGoal.asStateFlow()
+
+    private val _currentCalories = MutableStateFlow(0)
+    val currentCalories = _currentCalories.asStateFlow()
+
+    private val _currentProtein = MutableStateFlow(0)
+    val currentProtein = _currentProtein.asStateFlow()
+
+    private val _currentCarbs = MutableStateFlow(0)
+    val currentCarbs = _currentCarbs.asStateFlow()
+
+    private val _currentFat = MutableStateFlow(0)
+    val currentFat = _currentFat.asStateFlow()
 
     suspend fun getAllFoods(token: String) {
         try {
@@ -58,8 +70,13 @@ class HomeViewModel : ViewModel() {
             }
             _resultMealPlans.value = mealPlans
 
-            _resultEatenNutrition.value = response.data.eatenNutrition
+//            _resultEatenNutrition.value = response.data.eatenNutrition
             _resultNutritionGoal.value = response.data.nutritionGoal
+
+            _currentCalories.value = response.data.eatenNutrition.calories.toInt()
+            _currentProtein.value = response.data.eatenNutrition.protein.toInt()
+            _currentCarbs.value = response.data.eatenNutrition.carbohydrate.toInt()
+            _currentFat.value = response.data.eatenNutrition.fat.toInt()
 
             println("UNEATEN FOODS IN VIEWMODEL")
             println(_resultMealPlans.value)
@@ -80,6 +97,12 @@ class HomeViewModel : ViewModel() {
         _resultEatenFoods.value = _resultEatenFoods.value?.toMutableList()?.apply {
             add(food)
         }
+
+        _currentCalories.value += food.calories.toInt()
+        _currentProtein.value += food.protein.toInt()
+        _currentCarbs.value += food.carbohydrate.toInt()
+        _currentFat.value += food.fat.toInt()
+
     }
 
     fun onUneaten(food: FoodItem) {
@@ -89,6 +112,11 @@ class HomeViewModel : ViewModel() {
         _resultEatenFoods.value = _resultEatenFoods.value?.toMutableList()?.apply {
             remove(food)
         }
+
+        _currentCalories.value -= food.calories.toInt()
+        _currentProtein.value -= food.protein.toInt()
+        _currentCarbs.value -= food.carbohydrate.toInt()
+        _currentFat.value -= food.fat.toInt()
     }
 
 }

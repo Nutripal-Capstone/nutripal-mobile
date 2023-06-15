@@ -25,7 +25,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
-import com.capstone.nutripal.model.OrderFakeFood
 import com.capstone.nutripal.ui.components.cards.HomeCardAnalysis
 import com.capstone.nutripal.ui.components.general.SearchBar
 import com.capstone.nutripal.ui.components.badges.StatusChips
@@ -52,8 +51,22 @@ fun HomeScreen(
 
     val resultEatenFoods by homeViewModel.resultEatenFoods.collectAsState()
     val resultMealPlans by homeViewModel.resultMealPlans.collectAsState()
-    val resultEatenNutrition by homeViewModel.resultEatenNutrition.collectAsState()
     val resultNutritionGoal by homeViewModel.resultNutritionGoal.collectAsState()
+
+    val currentCalories by homeViewModel.currentCalories.collectAsState()
+    val currentProtein by homeViewModel.currentProtein.collectAsState()
+    val currentCarbs by homeViewModel.currentCarbs.collectAsState()
+    val currentFat by homeViewModel.currentFat.collectAsState()
+
+//    var currentCalories by remember { mutableStateOf(homeViewModel.currentCalories.value) }
+//    var currentProtein by remember { mutableStateOf(homeViewModel.currentProtein.value) }
+//    var currentCarbs by remember { mutableStateOf(homeViewModel.currentCarbs.value) }
+//    var currentFat by remember { mutableStateOf(homeViewModel.currentFat.value) }
+
+//    var currentCalories by remember { mutableStateOf(resultEatenNutrition.calories) }
+//    var currentProtein by remember { mutableStateOf(resultEatenNutrition.protein) }
+//    var currentCarbs by remember { mutableStateOf(resultEatenNutrition.carbohydrate) }
+//    var currentFat by remember { mutableStateOf(resultEatenNutrition.fat) }
 
     LaunchedEffect(key1 = true) {
         if (userToken.value != "") homeViewModel.getAllFoods(userToken.value)
@@ -114,13 +127,13 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .height(5.dp))
                         HomeCardAnalysis(
-                            calorie = resultEatenNutrition.calories.toInt(),
+                            calorie = currentCalories,
                             calorieNeeded = resultNutritionGoal.calorieGoal,
-                            protein = resultEatenNutrition.protein.toInt(),
+                            protein = currentProtein,
                             proteinNeeded = resultNutritionGoal.proteinGoal,
-                            carbs = resultEatenNutrition.carbohydrate.toInt(),
+                            carbs = currentCarbs,
                             carbsNeeded = resultNutritionGoal.carbohydrateGoal,
-                            fat = resultEatenNutrition.fat.toInt(),
+                            fat = currentFat,
                             fatNeeded = resultNutritionGoal.fatGoal
                         )
                     }
@@ -183,9 +196,17 @@ fun HomeScreen(
                             navigateToDetail = navigateToDetail,
                             onSwipeEat = { food ->
                                 homeViewModel.onEaten(food)
+//                                currentCalories += food.calories.toInt()
+//                                currentProtein += food.protein.toInt()
+//                                currentCarbs += food.carbohydrate.toInt()
+//                                currentFat += food.fat.toInt()
                             },
                             onSwipeUneat = { food ->
                                 homeViewModel.onUneaten(food)
+//                                currentCalories -= food.calories.toInt()
+//                                currentProtein -= food.protein.toInt()
+//                                currentCarbs -= food.carbohydrate.toInt()
+//                                currentFat -= food.fat.toInt()
                             },
                             onEat = {
                                 mealPlanViewModel.postEatenFood(userToken.value, firstFoodItem.id)
@@ -280,9 +301,17 @@ fun HomeScreen(
                             navigateToDetail = navigateToDetail,
                             onSwipeEat = { food ->
                                 homeViewModel.onEaten(food)
+//                                currentCalories += food.calories.toInt()
+//                                currentProtein += food.protein.toInt()
+//                                currentCarbs += food.carbohydrate.toInt()
+//                                currentFat += food.fat.toInt()
                             },
                             onSwipeUneat = { food ->
                                 homeViewModel.onUneaten(food)
+//                                currentCalories -= food.calories.toInt()
+//                                currentProtein -= food.protein.toInt()
+//                                currentCarbs -= food.carbohydrate.toInt()
+//                                currentFat -= food.fat.toInt()
                             },
                             onEat = {
                                 mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
