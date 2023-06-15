@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.navigation.Screen
-import com.capstone.nutripal.ui.screen.SplashScreen
+import com.capstone.nutripal.ui.screen.splash.SplashScreen
 import com.capstone.nutripal.ui.screen.home.HomeScreen
 import com.capstone.nutripal.ui.screen.signup.*
 import com.capstone.nutripal.ui.screen.welcome.WelcomeScreen
@@ -119,7 +119,11 @@ fun NutripalApp(
                 )
             }
             composable(Screen.MealPlan.route) {
-                MealPlan()
+                MealPlan(
+                    navigateToDetail = { foodId, foodServingId ->
+                        navController.navigate(Screen.DetailPage.createRoute(foodId, foodServingId))
+                    },
+                )
             }
             composable(Screen.Intakes.route) {
                 Intakes()
@@ -151,6 +155,9 @@ fun NutripalApp(
                     servingId = servingId.toString(),
                     navigateBack = {
                         navController.navigateUp()
+                    },
+                    navigateToMealPlan = {
+                        navController.navigate(Screen.MealPlan.route)
                     },
                 )
             }

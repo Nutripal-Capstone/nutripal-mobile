@@ -15,6 +15,7 @@ class ProfileViewModel : ViewModel(){
     val uiState: StateFlow<UiState<ProfileData>>
         get() = _uiState
 
+
     suspend fun getProfileDetail(token: String) {
         try {
             val response = ApiConfig.getApiService().getProfileDetail(

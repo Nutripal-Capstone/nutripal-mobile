@@ -8,6 +8,7 @@ import com.capstone.nutripal.ui.screen.welcome.LoginViewModel
 import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.ui.screen.detail.DetailPageViewModel
 import com.capstone.nutripal.ui.screen.home.HomeViewModel
+import com.capstone.nutripal.ui.screen.mealplan.MealPlanViewModel
 import com.capstone.nutripal.ui.screen.profile.ProfileViewModel
 import com.capstone.nutripal.ui.screen.search.SearchViewModel
 
@@ -27,6 +28,8 @@ class ViewModelFactory(private val dataUser: StoreDataUser, private val reposito
             return SearchViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             return ProfileViewModel() as T
+        } else if (modelClass.isAssignableFrom(MealPlanViewModel::class.java)) {
+            return MealPlanViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

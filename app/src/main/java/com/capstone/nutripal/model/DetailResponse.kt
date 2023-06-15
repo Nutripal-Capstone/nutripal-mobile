@@ -16,10 +16,10 @@ data class DetailResponse(
 
 data class DataDetail(
 
-	@field:SerializedName("serving_id")
+	@field:SerializedName("servingId")
 	val servingId: String? = null,
 
-	@field:SerializedName("food_name")
+	@field:SerializedName("foodName")
 	val foodName: String? = null,
 
 	@field:SerializedName("fiber")
@@ -31,28 +31,28 @@ data class DataDetail(
 	@field:SerializedName("calcium")
 	val calcium: Int? = null,
 
-	@field:SerializedName("vitamin_a")
+	@field:SerializedName("vitaminA")
 	val vitaminA: Int? = null,
 
-	@field:SerializedName("added_sugars")
+	@field:SerializedName("addedSugars")
 	val addedSugars: Double? = null,
 
-	@field:SerializedName("vitamin_c")
+	@field:SerializedName("vitaminC")
 	val vitaminC: Double? = null,
 
-	@field:SerializedName("vitamin_d")
+	@field:SerializedName("vitaminD")
 	val vitaminD: Double? = null,
 
-	@field:SerializedName("food_type")
+	@field:SerializedName("foodType")
 	val foodType: String? = null,
 
 	@field:SerializedName("calories")
 	val calories: Int? = null,
 
-	@field:SerializedName("food_id")
+	@field:SerializedName("foodId")
 	val foodId: String? = null,
 
-	@field:SerializedName("saturated_fat")
+	@field:SerializedName("saturatedFat")
 	val saturatedFat: Double? = null,
 
 	@field:SerializedName("carbohydrate")
@@ -61,13 +61,13 @@ data class DataDetail(
 	@field:SerializedName("sodium")
 	val sodium: Int? = null,
 
-	@field:SerializedName("monounsaturated_fat")
+	@field:SerializedName("monounsaturatedFat")
 	val monounsaturatedFat: Double? = null,
 
-	@field:SerializedName("serving_description")
+	@field:SerializedName("servingDescription")
 	val servingDescription: String? = null,
 
-	@field:SerializedName("polyunsaturated_fat")
+	@field:SerializedName("polyunsaturatedFat")
 	val polyunsaturatedFat: Double? = null,
 
 	@field:SerializedName("protein")
@@ -76,7 +76,7 @@ data class DataDetail(
 	@field:SerializedName("fat")
 	val fat: Double? = null,
 
-	@field:SerializedName("trans_fat")
+	@field:SerializedName("transFat")
 	val transFat: Double? = null,
 
 	@field:SerializedName("cholesterol")

@@ -47,14 +47,14 @@ fun Intakes(
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                         DailyCardAnalysis(
-                            calorie = 100,
-                            calorieNeeded = 1000,
-                            protein = 100,
-                            proteinNeeded = 1000,
-                            carbs = 100,
-                            carbsNeeded = 1000,
-                            fat = 100,
-                            fatNeeded = 1000,
+                            calorie = 100.0,
+                            calorieNeeded = 1000.0,
+                            protein = 100.0,
+                            proteinNeeded = 1000.0,
+                            carbs = 100.0,
+                            carbsNeeded = 1000.0,
+                            fat = 100.0,
+                            fatNeeded = 1000.0,
                             isMealPlan = false
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))

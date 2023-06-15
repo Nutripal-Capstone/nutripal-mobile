@@ -1,18 +1,8 @@
 package com.capstone.nutripal.api
 
-import com.capstone.nutripal.model.DefaultResponse
-import com.capstone.nutripal.model.LoginResponse
-import com.capstone.nutripal.model.RegisterRequest
-import com.capstone.nutripal.model.DetailResponse
-import com.capstone.nutripal.model.ProfileResponse
-import com.capstone.nutripal.model.SearchResponse
+import com.capstone.nutripal.model.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -27,6 +17,7 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body registerRequest: RegisterRequest
     ): Call<DefaultResponse>
+
     @GET("food/search")
     suspend fun getSearchFoodList(
         @Header("Authorization") token: String,
@@ -37,12 +28,41 @@ interface ApiService {
     @GET("food/detail")
     suspend fun getFoodDetail(
         @Header("Authorization") token: String,
-        @Query("food_id") foodId: String,
-        @Query("serving_id") servingId: String
+        @Query("foodId") foodId: String,
+        @Query("servingId") servingId: String
     ): DetailResponse
 
     @GET("profile")
     suspend fun getProfileDetail(
         @Header("Authorization") token: String
     ): ProfileResponse
+
+    @GET("tracker")
+    suspend fun getDayTracker(
+        @Header("Authorization") token: String
+    ): DayTrackerResponse
+
+    @POST("food/eaten")
+    suspend fun postEatenFood(
+        @Header("Authorization") token: String,
+        @Query("id") id: Int,
+    ): ReturnBodyEaten
+
+    @DELETE("food/eaten")
+    suspend fun deleteEatenFood(
+        @Header("Authorization") token: String,
+        @Query("id") id: Int,
+    ): ReturnBodyEaten
+
+    @POST("food/mealPlan")
+    suspend fun addToMealPlan(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>,
+    ): ReturnBodyEaten
+
+    @DELETE("food/mealPlan")
+    suspend fun deleteFoodFromMealPlan(
+        @Header("Authorization") token: String,
+        @Query("id") id: Int,
+    ): ReturnBodyEaten
 }

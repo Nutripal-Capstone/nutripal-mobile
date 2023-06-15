@@ -145,10 +145,10 @@ fun SelectableCourse(
                             verticalGap = 4.dp,
                             alignment = Alignment.Start,
                         ) {
-                            NutritionalChips("Cal", cal)
-                            NutritionalChips("Pro", pro)
-                            NutritionalChips("Car", carbs)
-                            NutritionalChips("Fat", fat)
+                            NutritionalChips("Cal", cal.toString())
+                            NutritionalChips("Pro", pro.toString())
+                            NutritionalChips("Car", carbs.toString())
+                            NutritionalChips("Fat", fat.toString())
                         }
                     }
                 }
@@ -237,10 +237,10 @@ fun EatenDisabledCourse(
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
-                            NutritionalChips("Cal", cal)
-                            NutritionalChips("Pro", pro)
-                            NutritionalChips("Car", carbs)
-                            NutritionalChips("Fat", fat)
+                            NutritionalChips("Cal", cal.toString())
+                            NutritionalChips("Pro", pro.toString())
+                            NutritionalChips("Car", carbs.toString())
+                            NutritionalChips("Fat", fat.toString())
                         }
                     }
                 }

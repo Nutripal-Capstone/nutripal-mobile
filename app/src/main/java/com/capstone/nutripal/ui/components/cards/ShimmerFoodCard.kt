@@ -14,10 +14,88 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.capstone.nutripal.ui.components.badges.NutritionalChips
 import com.capstone.nutripal.ui.components.general.shimmerEffect
 import com.capstone.nutripal.ui.theme.NutriPalTheme
 import com.capstone.nutripal.ui.theme.White
+import com.capstone.nutripal.ui.theme.secondText
 import com.capstone.nutripal.ui.theme.shadow
+
+@Composable
+fun ShimmeerFoodHistory() {
+    NutriPalTheme() {
+        Box(
+            modifier = Modifier
+                .wrapContentHeight()
+                .background(White)
+        )
+        {
+            Column(
+                modifier = Modifier
+                    .wrapContentHeight()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+
+                ) {
+                    AsyncImage(
+                        model = "",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(50.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                            .border(1.dp, shadow, RoundedCornerShape(5.dp))
+                            .shimmerEffect()
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(
+                                modifier = Modifier.wrapContentWidth(),
+                                verticalAlignment = Alignment.Bottom,
+
+                                ) {
+                                Text(
+                                    text = "",
+                                    style = MaterialTheme.typography.body1,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .shimmerEffect()
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "",
+                                    style = MaterialTheme.typography.subtitle2,
+                                    color = secondText,
+                                    modifier = Modifier.padding(2.dp).fillMaxWidth(0.5f).shimmerEffect()
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.weight(1.0f))
+
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Divider(
+                    modifier = Modifier.height(1.dp),
+                    color = shadow
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun ShimmerFoodCardEaten(
@@ -97,6 +175,7 @@ fun ShimmerFoodCardEaten(
 @Composable
 fun DefaultPreview5() {
     NutriPalTheme {
-        ShimmerFoodCardEaten()
+//        ShimmerFoodCardEaten()
+        ShimmeerFoodHistory()
     }
 }
