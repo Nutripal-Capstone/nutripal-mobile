@@ -27,7 +27,7 @@ class ViewModelFactory(private val dataUser: StoreDataUser, private val reposito
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            return ProfileViewModel(repository) as T
+            return ProfileViewModel() as T
         } else if (modelClass.isAssignableFrom(MealPlanViewModel::class.java)) {
             return MealPlanViewModel(repository) as T
         }

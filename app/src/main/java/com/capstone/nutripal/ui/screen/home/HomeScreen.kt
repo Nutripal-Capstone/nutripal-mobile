@@ -1,25 +1,19 @@
 package com.capstone.nutripal.ui.screen.home
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.capstone.nutripal.R
 import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
-import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.theme.NutriPalTheme
 
 import androidx.compose.foundation.background
@@ -29,8 +23,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -54,8 +46,9 @@ fun HomeScreen(
     navigateToDetail: (String) -> Unit,
     onSearchbarClicked: () -> Unit,
     navigateToMealPlan: () -> Unit,
+    context: Context = LocalContext.current,
+    dataStore: StoreDataUser = StoreDataUser(context)
 ) {
-
 }
 
 @Composable
@@ -70,6 +63,7 @@ fun HomeContent(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
+                // isi ya ki
 
         }
     }

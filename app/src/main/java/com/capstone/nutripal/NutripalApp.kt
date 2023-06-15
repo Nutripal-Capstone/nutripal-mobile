@@ -36,7 +36,6 @@ import androidx.navigation.navArgument
 import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.ui.navigation.NavigationItem
 import com.capstone.nutripal.ui.screen.detail.DetailScreen
-import com.capstone.nutripal.ui.screen.home.HomeScreen
 import com.capstone.nutripal.ui.screen.intakes.Intakes
 import com.capstone.nutripal.ui.screen.mealplan.MealPlan
 import com.capstone.nutripal.ui.screen.profile.ProfileScreen
@@ -49,16 +48,17 @@ fun NutripalApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val context = LocalContext.current as ComponentActivity
     val dataStore = StoreDataUser(context)
     val viewModelFactory = ViewModelFactory(dataStore, Injection.provideRepository())
     val signupViewModel: SignupViewModel = viewModel(factory = viewModelFactory)
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         bottomBar = {
-            var hasNavbars = mutableListOf(
+            val hasNavbars = mutableListOf(
                 Screen.Home.route,
                 Screen.MealPlan.route,
                 Screen.Intakes.route,
@@ -129,7 +129,7 @@ fun NutripalApp(
                 Intakes()
             }
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(navController = navController)
             }
             composable(Screen.SearchPage.route) {
                 SearchScreen(
@@ -173,6 +173,8 @@ private fun BottomBar(
     BottomNavigation(
         modifier = modifier,
     ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
         val navigationItems = listOf(
             NavigationItem(
                 title = "Home",
@@ -203,62 +205,49 @@ private fun BottomBar(
             modifier = modifier,
             backgroundColor = White,
         ){
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
-            println(currentRoute)
             navigationItems.map { item ->
-                if(currentRoute == item.screen.route) {
-                    BottomNavigationItem(
-                        icon = {
+                BottomNavigationItem(
+                    icon = {
+                        if(currentRoute == item.screen.route) {
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = item.title,
                                 tint = IjoTema
                             )
-                        },
-                        label = { Text(
-                            text = item.title,
-                            modifier = modifier,
-                            color = defaultText
-                        ) },
-                        selected = true,
-                        onClick = {
-                            navController.navigate(item.screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                restoreState = true
-                                launchSingleTop = true
-                            }
-                        }
-                    )
-                } else {
-                    BottomNavigationItem(
-                        icon = {
+                        } else {
                             Icon(
                                 imageVector = item.iconOutlined,
                                 contentDescription = item.title,
                                 tint = disabledText
                             )
-                        },
-                        label = { Text(
+                        }
+                    },
+                    label = {
+                        if(currentRoute == item.screen.route) {
+                            Text(
+                                text = item.title,
+                                modifier = modifier,
+                                color = defaultText
+                            )
+                        } else {
+                            Text(
                             text = item.title,
                             modifier = modifier,
                             color = disabledText
-                        ) },
-                        selected = true,
-                        onClick = {
-                            navController.navigate(item.screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                restoreState = true
-                                launchSingleTop = true
-                            }
+                            )
                         }
-                    )
-                }
-
+                    },
+                    selected = currentRoute == item.screen.route,
+                    onClick = {
+                        navController.navigate(item.screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
         }
     }

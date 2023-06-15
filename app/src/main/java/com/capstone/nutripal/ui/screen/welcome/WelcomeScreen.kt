@@ -76,7 +76,6 @@ fun HorizontalPagerWithIndicator(
     ),
 ) {
     val scope = rememberCoroutineScope()
-//    val userToken = dataStore.getUserToken().collectAsState(initial = "")
     val resultMsg by loginViewModel.result.collectAsState()
 
     LaunchedEffect(resultMsg) {
@@ -103,11 +102,9 @@ fun HorizontalPagerWithIndicator(
             val account = task.getResult(ApiException::class.java)
             val idToken = account?.idToken
             val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-//            val credential = Firebase.auth.GoogleAuthProvider.credential(googleUser.getAuthResponse().id_token);
             Firebase.auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
                 if (authTask.isSuccessful) {
                     // User signed in successfully
-
                     if (idToken != null) {
                         val user = FirebaseAuth.getInstance().currentUser
                         user!!.getIdToken(true)
