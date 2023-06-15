@@ -84,7 +84,7 @@ class HomeViewModel : ViewModel() {
 
     fun onUneaten(food: FoodItem) {
         _resultMealPlans.value = _resultMealPlans.value?.toMutableList()?.apply {
-            add(food)
+            add(0, food)
         }
         _resultEatenFoods.value = _resultEatenFoods.value?.toMutableList()?.apply {
             remove(food)

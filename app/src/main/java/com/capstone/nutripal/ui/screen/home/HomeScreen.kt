@@ -166,20 +166,20 @@ fun HomeScreen(
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    resultMealPlans?.forEach { foodItem ->
-                        // kalo belum dimakan masuk sini
+                    val firstFoodItem = resultMealPlans?.firstOrNull()
+                    if (firstFoodItem != null) {
                         HandleCourse(
-                            foodItem,
-                            foodItem.foodId,
-                            foodItem.id.toString(),
+                            firstFoodItem,
+                            firstFoodItem.foodId,
+                            firstFoodItem.id.toString(),
                             "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                            foodItem.foodName,
-                            foodItem.servingDescription,
+                            firstFoodItem.foodName,
+                            firstFoodItem.servingDescription,
                             false,
-                            foodItem.calories.toString(),
-                            foodItem.protein.toString(),
-                            foodItem.carbohydrate.toString(),
-                            foodItem.fat.toString(),
+                            firstFoodItem.calories.toString(),
+                            firstFoodItem.protein.toString(),
+                            firstFoodItem.carbohydrate.toString(),
+                            firstFoodItem.fat.toString(),
                             navigateToDetail = navigateToDetail,
                             onSwipeEat = { food ->
                                 homeViewModel.onEaten(food)
@@ -188,16 +188,48 @@ fun HomeScreen(
                                 homeViewModel.onUneaten(food)
                             },
                             onEat = {
-                                mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
+                                mealPlanViewModel.postEatenFood(userToken.value, firstFoodItem.id)
                             },
                             onUneat = {
-                                mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
+                                mealPlanViewModel.deleteEatenFood(userToken.value, firstFoodItem.id)
                             },
                             onDelete = {
-                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
+                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, firstFoodItem.id)
                             },
                         )
                     }
+//                    resultMealPlans?.forEach { foodItem ->
+//                        // kalo belum dimakan masuk sini
+//                        HandleCourse(
+//                            foodItem,
+//                            foodItem.foodId,
+//                            foodItem.id.toString(),
+//                            "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+//                            foodItem.foodName,
+//                            foodItem.servingDescription,
+//                            false,
+//                            foodItem.calories.toString(),
+//                            foodItem.protein.toString(),
+//                            foodItem.carbohydrate.toString(),
+//                            foodItem.fat.toString(),
+//                            navigateToDetail = navigateToDetail,
+//                            onSwipeEat = { food ->
+//                                homeViewModel.onEaten(food)
+//                            },
+//                            onSwipeUneat = { food ->
+//                                homeViewModel.onUneaten(food)
+//                            },
+//                            onEat = {
+//                                mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
+//                            },
+//                            onUneat = {
+//                                mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
+//                            },
+//                            onDelete = {
+//                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
+//                            },
+//                        )
+//                    }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         modifier = Modifier

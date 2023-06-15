@@ -37,13 +37,6 @@ fun HandleCourse(
     foodTitle: String,
     portion: String,
     isEaten: Boolean,
-//    cal : Double,
-//    pro : Double,
-//    carbs: Double,
-//    fat : Double,
-//    navigateToDetail : (String) -> Unit,
-//    onSwipeEat: (FoodItem) -> Unit,
-//    onSwipeUneat: (FoodItem) -> Unit,
     cal : String,
     pro : String,
     carbs: String,
@@ -55,14 +48,16 @@ fun HandleCourse(
     onSwipeEat: (FoodItem) -> Unit,
     onSwipeUneat: (FoodItem) -> Unit,
 ) {
-    var eatStatus by rememberSaveable { mutableStateOf(isEaten) }
+    var eatStatus by remember { mutableStateOf(isEaten) }
     val eatFunction = {
         eatStatus = true
         onEat()
+        onSwipeEat(objFood)
     }
     val unEatFunction = {
         eatStatus = false
         onUneat()
+        onSwipeUneat(objFood)
     }
     val makan = SwipeAction(
         icon = {
@@ -95,10 +90,10 @@ fun HandleCourse(
     SwipeableActionsBox(
         modifier = Modifier.clip(RoundedCornerShape(12.dp)),
         swipeThreshold = 100.dp,
-        startActions = if (eatStatus) listOf(unmakan) else emptyList(),
-        endActions = if (!eatStatus) listOf(makan) else emptyList()
+        startActions = if (isEaten) listOf(unmakan) else emptyList(),
+        endActions = if (!isEaten) listOf(makan) else emptyList()
     ) {
-        if(eatStatus) {
+        if(isEaten) {
             println("eaten")
             EatenCourse(
                 image = image,
