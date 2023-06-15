@@ -16,22 +16,22 @@ data class SearchResponse(
 
 data class DataItem(
 
-	@field:SerializedName("serving_id")
+	@field:SerializedName("servingId")
 	val servingId: String? = null,
 
-	@field:SerializedName("food_name")
+	@field:SerializedName("foodName")
 	val foodName: String? = null,
 
 	@field:SerializedName("calories")
 	val calories: Double? = null,
 
-	@field:SerializedName("food_id")
+	@field:SerializedName("foodId")
 	val foodId: String? = null,
 
 	@field:SerializedName("carbohydrate")
 	val carbohydrate: Double? = null,
 
-	@field:SerializedName("serving_description")
+	@field:SerializedName("servingDescription")
 	val servingDescription: String? = null,
 
 	@field:SerializedName("protein")

@@ -13,10 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.http.Field
 
-class DetailPageViewModel(
-    private val repository: FakeFoodRepository
-) : ViewModel() {
+class DetailPageViewModel() : ViewModel() {
 
 
     private val _uiState: MutableStateFlow<UiState<DataDetail>> =
@@ -36,25 +35,30 @@ class DetailPageViewModel(
 
     suspend fun getFoodById(foodId: String, servingId: String) {
         val response = ApiConfig.getApiService().getFoodDetail(
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlJpY2t5IiwiZW1haWwiOiJyaWNreWFudG93bUBnbWFpbC5jb20iLCJpYXQiOjE2ODY2MzI3MTgsImV4cCI6MTY4NjcxOTExOH0.k8VDbeD6cIjh5g26tX1lhBsuKpd18gFYKw0Uxo06yjg",
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFkaGFtIEtoYWxpZCIsImVtYWlsIjoicmlja3lhbnRvd21AZ21haWwuY29tIiwiaWF0IjoxNjg2NzQwOTIzLCJleHAiOjE2ODkzMzI5MjN9.iXeNxh5LzM39XkHVoWmukd1rmVeBFLWX_f7TH04896A",
             foodId,
             servingId
         )
         _uiState.value = UiState.Loading
         _uiState.value = UiState.Success(response.data as DataDetail)
-//            _resultDetail.value = response.data as List<DataDetail>
-//        viewModelScope.launch {
-//            _uiState.value = UiState.Loading
-//            _uiState.value = UiState.Success(repository.getOrderFakeFoodById(foodId))
-//        val response = ApiConfig.getApiService().getSearchFoodList(
-//            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlJpY2t5YW50b3dtIiwiZW1haWwiOiJyaWNreWFudG93bUBnbWFpbC5jb20iLCJpYXQiOjE2ODYzOTk1NjksImV4cCI6MTY4ODk5MTU2OX0.apZrblUzU1Knh11PviDJN8oiGkdGi2--3WNEO7JSI2M",
-//            name, 0)
-//        }
     }
 
-//    fun addToCart(reward: FakeFoodClass, count: Int) {
-//        viewModelScope.launch {
-//            repository.updateOrderReward(reward.id, count)
-//        }
-//    }
+    fun addToMealPlan(item: DataDetail, mealTime: String) {
+        viewModelScope.launch {
+//            @Field("foodId") foodId: String,
+//            @Field("servingId") servingId: String,
+//            @Field("mealTime") mealTime: String,
+
+            val response = ApiConfig.getApiService().addToMealPlan(
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFkaGFtIEtoYWxpZCIsImVtYWlsIjoicmlja3lhbnRvd21AZ21haWwuY29tIiwiaWF0IjoxNjg2NzQwOTIzLCJleHAiOjE2ODkzMzI5MjN9.iXeNxh5LzM39XkHVoWmukd1rmVeBFLWX_f7TH04896A",
+                mapOf(
+                    "foodId" to item.foodId.toString(),
+                    "servingId" to item.servingId.toString(),
+                    "mealTime" to mealTime
+                )
+            )
+            println("check errror")
+            println("${response.success} ${response.message}")
+        }
+    }
 }

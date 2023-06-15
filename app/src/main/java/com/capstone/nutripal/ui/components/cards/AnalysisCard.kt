@@ -125,14 +125,14 @@ fun HomeCardItem(
 
 @Composable
 fun DailyCardAnalysis(
-    calorie: Int,
-    calorieNeeded: Int,
-    protein: Int,
-    proteinNeeded: Int,
-    carbs: Int,
-    carbsNeeded: Int,
-    fat: Int,
-    fatNeeded: Int,
+    calorie: Double,
+    calorieNeeded: Double,
+    protein: Double,
+    proteinNeeded: Double,
+    carbs: Double,
+    carbsNeeded: Double,
+    fat: Double,
+    fatNeeded: Double,
     isMealPlan : Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -175,10 +175,10 @@ fun DailyCardAnalysis(
 
 @Composable
 fun DailyCardItem(
-    title : String,
-    now : Int,
-    needed : Int,
-    isMealPlan : Boolean,
+    title: String,
+    now: Double,
+    needed: Double,
+    isMealPlan: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val image : Int

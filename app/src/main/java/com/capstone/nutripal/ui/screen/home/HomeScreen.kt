@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
-import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.theme.NutriPalTheme
 
 import androidx.compose.foundation.background
@@ -26,27 +25,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.lifecycle.viewModelScope
-import com.capstone.nutripal.model.FakeFoodClass
-import com.capstone.nutripal.model.FoodItem
 import com.capstone.nutripal.model.OrderFakeFood
 import com.capstone.nutripal.ui.components.cards.HomeCardAnalysis
 import com.capstone.nutripal.ui.components.general.SearchBar
 import com.capstone.nutripal.ui.components.badges.StatusChips
 import com.capstone.nutripal.ui.components.cards.HandleCourse
+import com.capstone.nutripal.ui.screen.mealplan.MealPlanViewModel
 import com.capstone.nutripal.ui.theme.*
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
 //    modifier: Modifier = Modifier,
-    navigateToDetail: (String) -> Unit,
+    navigateToDetail: (String, String) -> Unit,
     onSearchbarClicked: () -> Unit,
     navigateToMealPlan: () -> Unit,
     context: Context = LocalContext.current,
     dataStore: StoreDataUser = StoreDataUser(context),
-    homeViewModel: HomeViewModel = viewModel(factory = ViewModelFactory(dataStore, Injection.provideRepository()))
+    homeViewModel: HomeViewModel = viewModel(
+        factory = ViewModelFactory(dataStore, Injection.provideRepository())
+    ),
+    mealPlanViewModel: MealPlanViewModel = viewModel(
+        factory = ViewModelFactory(dataStore, Injection.provideRepository())
+    ),
 ) {
     val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
 
@@ -176,17 +176,26 @@ fun HomeScreen(
                             foodItem.foodName,
                             foodItem.servingDescription,
                             false,
-                            foodItem.calories,
-                            foodItem.protein,
-                            foodItem.carbohydrate,
-                            foodItem.fat,
+                            foodItem.calories.toString(),
+                            foodItem.protein.toString(),
+                            foodItem.carbohydrate.toString(),
+                            foodItem.fat.toString(),
                             navigateToDetail = navigateToDetail,
                             onSwipeEat = { food ->
                                 homeViewModel.onEaten(food)
                             },
                             onSwipeUneat = { food ->
                                 homeViewModel.onUneaten(food)
-                            }
+                            },
+                            onEat = {
+                                mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
+                            },
+                            onUneat = {
+                                mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
+                            },
+                            onDelete = {
+                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
+                            },
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -231,18 +240,27 @@ fun HomeScreen(
                             "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                             foodItem.foodName,
                             foodItem.servingDescription,
-                            false,
-                            foodItem.calories,
-                            foodItem.protein,
-                            foodItem.carbohydrate,
-                            foodItem.fat,
+                            true,
+                            foodItem.calories.toString(),
+                            foodItem.protein.toString(),
+                            foodItem.carbohydrate.toString(),
+                            foodItem.fat.toString(),
                             navigateToDetail = navigateToDetail,
                             onSwipeEat = { food ->
                                 homeViewModel.onEaten(food)
                             },
                             onSwipeUneat = { food ->
                                 homeViewModel.onUneaten(food)
-                            }
+                            },
+                            onEat = {
+                                mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
+                            },
+                            onUneat = {
+                                mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
+                            },
+                            onDelete = {
+                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
+                            },
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }

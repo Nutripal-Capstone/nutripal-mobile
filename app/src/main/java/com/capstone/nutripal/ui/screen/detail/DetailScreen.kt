@@ -1,6 +1,7 @@
 package com.capstone.nutripal.ui.screen.detail
 
 import android.content.Context
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
@@ -44,8 +45,16 @@ import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.components.cards.Dialogs
 import com.capstone.nutripal.ui.components.cards.HandleCourse
 import com.capstone.nutripal.ui.components.general.TableGizi
+import com.capstone.nutripal.ui.screen.signup.ActivityLevelOption
+import com.capstone.nutripal.ui.screen.signup.SelectableCourse
 import com.capstone.nutripal.ui.theme.*
 import kotlinx.coroutines.launch
+
+data class FoodTimeOption(
+    val name: String,
+    val description: String,
+    val id: String
+)
 
 @Composable
 fun DetailScreen(
@@ -59,6 +68,7 @@ fun DetailScreen(
         )
     ),
     navigateBack: () -> Unit,
+    navigateToMealPlan : () -> Unit
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -72,6 +82,9 @@ fun DetailScreen(
                 DetailContent(
                     data = data,
                     onBackClick = navigateBack,
+                    detailViewModel = viewModel,
+                    navigateToMealPlan = navigateToMealPlan
+
                 )
             }
             is UiState.Error -> {}
@@ -86,10 +99,21 @@ fun DetailContent(
     data : DataDetail,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    detailViewModel : DetailPageViewModel,
+    navigateToMealPlan : () -> Unit
 ) {
     val bottomSheetScaffoldState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false)  }
+
+    val activityLevelOptions = listOf(
+        FoodTimeOption("Breakfast", "Will add to breakfast plan.", "breakfast"),
+        FoodTimeOption("Lunch", "Will add to lunch plan.", "lunch"),
+        FoodTimeOption("Dinner", "Will add to dinner plan.", "dinner"),
+    )
+
+    var selectedFoodTime by rememberSaveable { mutableStateOf("") }
+
     ModalBottomSheetLayout(
         sheetState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
@@ -115,20 +139,17 @@ fun DetailContent(
                     style = MaterialTheme.typography.h1,
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                repeat(3) {
-//                    HandleCourse(
-//                        "1",
-//                        "Breakfast",
-//                        "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
-//                        "Soto Ayam",
-//                        "1 portion",
-//                        false,
-//                        700.0,
-//                        700.0,
-//                        700.0,
-//                        700.0,
-//                        {}
-//                    )
+                for (option in activityLevelOptions) {
+                    SelectableCourse(
+                        name = option.name,
+                        description = option.description,
+                        selected = selectedFoodTime == option.id,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                selectedFoodTime = option.id
+                            }
+                    )
                     Spacer(modifier = Modifier.height(6.dp))
                 }
                 Text(
@@ -140,7 +161,9 @@ fun DetailContent(
                 )
                 Spacer(modifier = Modifier.height(3.dp))
                 Button(
-                    onClick = {},
+                    onClick = {
+                        openDialog.value = true
+                    },
                     shape = RoundedCornerShape(27.dp),
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(vertical = 15.dp)
@@ -157,15 +180,15 @@ fun DetailContent(
         LazyColumn(modifier = Modifier) {
             item {
                 Box {
-//                    AsyncImage(
-//                        model = image,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .aspectRatio(1.5f)
-//                            .shadow(2.dp)
-//                    )
+                    AsyncImage(
+                        model = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1.5f)
+                            .shadow(2.dp)
+                    )
                     Row (
                         modifier = Modifier
                             .fillMaxWidth()
@@ -197,10 +220,10 @@ fun DetailContent(
                         text = data.foodName.toString(),
                         style = MaterialTheme.typography.h1,
                     )
-                    Text(
-                        text = data.foodType.toString(),
-                        style = MaterialTheme.typography.body1,
-                    )
+//                    Text(
+//                        text = data.foodType.toString(),
+//                        style = MaterialTheme.typography.body1,
+//                    )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Nutrition Facts",
@@ -241,10 +264,11 @@ fun DetailContent(
                     Spacer(modifier = Modifier.height(3.dp))
                     Button(
                         onClick = {
-//                            coroutineScope.launch {
+                            coroutineScope.launch {
 //                                    bottomSheetScaffoldState.animateTo(ModalBottomSheetValue.Expanded)
-//                            }
-                                  openDialog.value = true
+                                bottomSheetScaffoldState.show()
+                            }
+//                                  openDialog.value = true
                         },
                         shape = RoundedCornerShape(27.dp),
                         modifier = Modifier.fillMaxWidth(),
@@ -284,11 +308,13 @@ fun DetailContent(
                                         style = MaterialTheme.typography.subtitle1,
                                         textAlign = TextAlign.Center
                                     )
+//                                    Toast(this, "Mew")
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         androidx.compose.material3.Button(
                                             onClick = {
-                                                openDialog.value = false
+                                                detailViewModel.addToMealPlan(data, selectedFoodTime)
+                                                navigateToMealPlan()
                                             },
                                             modifier = Modifier.fillMaxWidth(),
                                             colors = androidx.compose.material3.ButtonDefaults.buttonColors(
@@ -304,6 +330,7 @@ fun DetailContent(
                                         Spacer(modifier = Modifier.width(6.dp))
                                         TextButton(
                                             onClick = {
+                                                openDialog.value = false
                                             },
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
@@ -321,8 +348,6 @@ fun DetailContent(
             }
         }
     }
-
-
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_4)

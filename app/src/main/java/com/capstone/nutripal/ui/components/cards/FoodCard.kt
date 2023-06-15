@@ -14,14 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.offset
 import coil.compose.AsyncImage
 import com.capstone.nutripal.model.FakeFoodClass
 import com.capstone.nutripal.model.FoodItem
@@ -32,7 +27,6 @@ import com.capstone.nutripal.ui.components.general.FlowRow
 import com.capstone.nutripal.ui.theme.*
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import kotlin.math.roundToInt
 
 @Composable
 fun HandleCourse(
@@ -43,15 +37,33 @@ fun HandleCourse(
     foodTitle: String,
     portion: String,
     isEaten: Boolean,
-    cal : Double,
-    pro : Double,
-    carbs: Double,
-    fat : Double,
-    navigateToDetail : (String) -> Unit,
+//    cal : Double,
+//    pro : Double,
+//    carbs: Double,
+//    fat : Double,
+//    navigateToDetail : (String) -> Unit,
+//    onSwipeEat: (FoodItem) -> Unit,
+//    onSwipeUneat: (FoodItem) -> Unit,
+    cal : String,
+    pro : String,
+    carbs: String,
+    fat : String,
+    navigateToDetail : (String, String) -> Unit,
+    onEat : () -> Unit,
+    onUneat : () -> Unit,
+    onDelete : () -> Unit,
     onSwipeEat: (FoodItem) -> Unit,
     onSwipeUneat: (FoodItem) -> Unit,
 ) {
     var eatStatus by rememberSaveable { mutableStateOf(isEaten) }
+    val eatFunction = {
+        eatStatus = true
+        onEat()
+    }
+    val unEatFunction = {
+        eatStatus = false
+        onUneat()
+    }
     val makan = SwipeAction(
         icon = {
             Text(
@@ -61,9 +73,8 @@ fun HandleCourse(
         ) },
         background = IjoCompo,
         onSwipe = {
-            eatStatus = true
-//            println("makan" + eatStatus)
             onSwipeEat(objFood)
+            eatFunction()
         }
     )
     val unmakan = SwipeAction(
@@ -76,22 +87,21 @@ fun HandleCourse(
         background = Color.Red,
         isUndo = true,
         onSwipe = {
-            eatStatus = false
-//            println("unmakan" + eatStatus)
             onSwipeUneat(objFood)
+            unEatFunction()
         },
     )
 
     SwipeableActionsBox(
         modifier = Modifier.clip(RoundedCornerShape(12.dp)),
         swipeThreshold = 100.dp,
-        startActions = listOf(unmakan),
-        endActions = listOf(makan)
+        startActions = if (eatStatus) listOf(unmakan) else emptyList(),
+        endActions = if (!eatStatus) listOf(makan) else emptyList()
     ) {
         if(eatStatus) {
             println("eaten")
             EatenCourse(
-                image = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                image = image,
                 foodTitle = foodTitle,
                 portion = portion,
                 cal = cal,
@@ -99,15 +109,18 @@ fun HandleCourse(
                 carbs= carbs,
                 fat = fat,
                 modifier = Modifier.clickable {
-                    navigateToDetail(foodId)
+                    navigateToDetail(foodId, objFood.servingId)
                     println(foodId)
                 },
-                isEaten = true
+                isEaten = true,
+                onEat = { eatFunction() },
+                onUneat = { unEatFunction() },
+                onDelete = { onDelete() },
             )
-        } else if(!eatStatus) {
+        } else {
             println("not eaten")
             EatenCourse(
-                image = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                image = image,
                 foodTitle = foodTitle,
                 portion = portion,
                 cal = cal,
@@ -115,10 +128,12 @@ fun HandleCourse(
                 carbs= carbs,
                 fat = fat,
                 modifier = Modifier.clickable {
-                    navigateToDetail(foodId)
-                    println(foodId)
+                    navigateToDetail(foodId, objFood.servingId)
                 },
-                isEaten = false
+                isEaten = false,
+                onEat = { eatFunction() },
+                onUneat = { unEatFunction() },
+                onDelete = { onDelete() },
             )
 //            MainCourse(
 //                cardTitle = cardTitle,
@@ -146,10 +161,10 @@ fun MainCourse(
     foodTitle: String,
     portion: String,
     isEaten: Boolean,
-    cal : Double,
-    pro : Double,
-    carbs: Double,
-    fat : Double,
+    cal : String,
+    pro : String,
+    carbs: String,
+    fat : String,
     modifier: Modifier = Modifier,
 ) {
 
@@ -273,24 +288,45 @@ fun EatenCourse(
     image : String,
     foodTitle: String,
     portion: String,
-    cal : Double,
-    pro : Double,
-    carbs: Double,
-    fat : Double,
+    cal : String,
+    pro : String,
+    carbs: String,
+    fat : String,
     isEaten: Boolean,
     modifier: Modifier = Modifier,
+    onEat : () -> Unit,
+    onUneat : () -> Unit,
+    onDelete : () -> Unit,
 ) {
     // dropdown more
     val isMenuOpen = remember { mutableStateOf(false) }
-    val menuItems = listOf("Re-generate", "Eat", "Un-Eat")
+    val menuItemsMealPlan = listOf("Re-generate", "Eat", "Delete")
+    val menuItemsEaten = listOf("Un-Eat")
     val selectedItem = remember { mutableStateOf("") }
+
+    when(selectedItem.value) {
+        ("Re-generate") -> {}
+        ("Eat") -> {
+            onEat()
+            selectedItem.value = ""
+        }
+        ("Un-Eat") -> {
+            onUneat()
+            selectedItem.value = ""
+        }
+        ("Delete") -> {
+            onDelete()
+            selectedItem.value = ""
+        }
+
+    }
 
     NutriPalTheme() {
         Box(
             modifier = modifier
                 .wrapContentHeight()
                 .wrapContentWidth()
-                .background(White, shape = RoundedCornerShape(12.dp))
+                .background(if(isEaten) Color(0xFFCCE4D0) else White, shape = RoundedCornerShape(12.dp))
                 .border(1.dp, shadow, RoundedCornerShape(10.dp)),
         )
         {
@@ -364,7 +400,7 @@ fun EatenCourse(
                                     onDismissRequest = { isMenuOpen.value = false },
                                     modifier = Modifier.border(0.5.dp, shadow, RectangleShape)
                                 ) {
-                                    menuItems.forEach { item ->
+                                    (if(isEaten) menuItemsEaten else menuItemsMealPlan).forEach { item ->
                                         DropdownMenuItem(onClick = {
                                             selectedItem.value = item
                                             isMenuOpen.value = false
@@ -406,7 +442,11 @@ fun FoodCardAnalysis() {
 //                image = "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
 //                foodTitle = "soto",
 //                portion = "1",
-//                isEaten = true
+//                isEaten = true,
+//                cal = 70.0,
+//                carbs = 120.0,
+//                fat = 50.0,
+//                pro = 20.0
 //            )
 //            EatenCourse( "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4", "Soto Ayam", "1 portion", )
         }

@@ -9,6 +9,7 @@ import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.ui.screen.detail.DetailPageViewModel
 import com.capstone.nutripal.ui.screen.home.HomeViewModel
 import com.capstone.nutripal.ui.screen.intakes.IntakesViewModel
+import com.capstone.nutripal.ui.screen.mealplan.MealPlanViewModel
 import com.capstone.nutripal.ui.screen.profile.ProfileViewModel
 import com.capstone.nutripal.ui.screen.search.SearchViewModel
 
@@ -21,15 +22,17 @@ class ViewModelFactory(private val dataUser: StoreDataUser, private val reposito
         } else if (modelClass.isAssignableFrom(SignupViewModel::class.java)) {
             return SignupViewModel(dataUser) as T
         } else if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            return HomeViewModel(repository) as T
+            return HomeViewModel() as T
         } else if (modelClass.isAssignableFrom(DetailPageViewModel::class.java)) {
-            return DetailPageViewModel(repository) as T
+            return DetailPageViewModel() as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-            return SearchViewModel(repository) as T
+            return SearchViewModel() as T
         } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             return ProfileViewModel() as T
         } else if (modelClass.isAssignableFrom(IntakesViewModel::class.java)) {
             return IntakesViewModel() as T
+        } else if (modelClass.isAssignableFrom(MealPlanViewModel::class.java)) {
+            return MealPlanViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

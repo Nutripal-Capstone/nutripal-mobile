@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class TrackerResponse(
 
 	@field:SerializedName("data")
-	val data: Data,
+	val data: DataTracker,
 
 	@field:SerializedName("success")
 	val success: Boolean,
@@ -14,7 +14,7 @@ data class TrackerResponse(
 	val message: String
 )
 
-data class Data(
+data class DataTracker(
 
 	@field:SerializedName("date")
 	val date: String,
@@ -83,7 +83,7 @@ data class FoodItem(
 	val fat: Double,
 
 	@field:SerializedName("id")
-	val id: Double,
+	val id: Int,
 
 	@field:SerializedName("calories")
 	val calories: Double,

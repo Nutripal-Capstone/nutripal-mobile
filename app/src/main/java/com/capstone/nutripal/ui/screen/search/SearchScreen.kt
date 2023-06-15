@@ -24,6 +24,7 @@ import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.components.cards.HistoryFoodCard
+import com.capstone.nutripal.ui.components.cards.ShimmeerFoodHistory
 import com.capstone.nutripal.ui.components.general.SearchBar
 import com.capstone.nutripal.ui.screen.detail.DetailPageViewModel
 import kotlinx.coroutines.launch
@@ -50,13 +51,20 @@ fun SearchScreen(
                 searchViewModel.viewModelScope.launch {
                     searchViewModel.getSearch( userToken.value, "")
                 }
+                SearchContent(
+                    onBackClick,
+                    navigateToDetail,
+                    listData = listOf(),
+                    isLoading = true
+                )
             }
             is UiState.Success -> {
                 val data = uiState.data
                 SearchContent(
                     onBackClick,
                     navigateToDetail,
-                    listData = data
+                    listData = data,
+                    isLoading = false
                 )
             }
             is UiState.Error -> {}
@@ -74,6 +82,7 @@ fun SearchContent (
     searchViewModel: SearchViewModel = viewModel(
         factory = ViewModelFactory(dataStore, FakeFoodRepository())
     ),
+    isLoading: Boolean,
 ) {
     val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
     var textValue by remember { mutableStateOf("") }
@@ -109,21 +118,28 @@ fun SearchContent (
            }
            Spacer(modifier = Modifier.height(18.dp))
 
-           for(i in listData) {
-               HistoryFoodCard(
-                   "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
-                   i.foodName.toString(),
-                   i.servingDescription.toString(),
-                   i.calories,
-                   i.protein,
-                   i.carbohydrate,
-                   i.fat,
-                   modifier = Modifier.clickable {
-                       i.foodId?.let { i.servingId?.let { it1 -> navigateToDetail(i.foodId, it1) } }
-                   }
-               )
-               Spacer(modifier = Modifier.height(12.dp))
+           if(isLoading) {
+               repeat(5) {
+                   ShimmeerFoodHistory()
+               }
+           } else {
+               for(i in listData) {
+                   HistoryFoodCard(
+                       "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+                       i.foodName.toString(),
+                       i.servingDescription.toString(),
+                       i.calories,
+                       i.protein,
+                       i.carbohydrate,
+                       i.fat,
+                       modifier = Modifier.clickable {
+                           i.foodId?.let { i.servingId?.let { it1 -> navigateToDetail(i.foodId, it1) } }
+                       }
+                   )
+                   Spacer(modifier = Modifier.height(12.dp))
+               }
            }
+
        }
 
 

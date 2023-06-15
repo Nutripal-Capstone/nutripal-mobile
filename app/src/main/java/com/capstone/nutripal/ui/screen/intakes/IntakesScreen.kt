@@ -13,10 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.model.StoreDataUser
-import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.components.cards.DailyCardAnalysis
 import com.capstone.nutripal.ui.components.cards.HistoryFoodCard
 import com.capstone.nutripal.ui.theme.NutriPalTheme
@@ -74,14 +71,14 @@ fun IntakesScreen(
                             .fillMaxWidth()
                             .height(5.dp))
                         DailyCardAnalysis(
-                            calorie = eatenNutrition.calories.toInt(),
-                            calorieNeeded = nutritionGoal.calorieGoal,
-                            protein = eatenNutrition.protein.toInt(),
-                            proteinNeeded = nutritionGoal.proteinGoal,
-                            carbs = eatenNutrition.carbohydrate.toInt(),
-                            carbsNeeded = nutritionGoal.carbohydrateGoal,
-                            fat = eatenNutrition.fat.toInt(),
-                            fatNeeded = nutritionGoal.fatGoal,
+                            calorie = eatenNutrition.calories,
+                            calorieNeeded = nutritionGoal.calorieGoal.toDouble(),
+                            protein = eatenNutrition.protein,
+                            proteinNeeded = nutritionGoal.proteinGoal.toDouble(),
+                            carbs = eatenNutrition.carbohydrate,
+                            carbsNeeded = nutritionGoal.carbohydrateGoal.toDouble(),
+                            fat = eatenNutrition.fat,
+                            fatNeeded = nutritionGoal.fatGoal.toDouble(),
                             isMealPlan = false
                         )
                         Spacer(modifier = Modifier
@@ -101,21 +98,8 @@ fun IntakesScreen(
                                 .fillMaxWidth()
                                 .height(10.dp))
                         }
-//                        repeat(3) {
-////                            HistoryFoodCard(
-////                                "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
-////                                "Soto Ayam",
-////                                "1 portion"
-////                            )
-//                            Spacer(modifier = Modifier
-//                                .fillMaxWidth()
-//                                .height(10.dp))
-//                        }
                     }
                 }
-//                repeat(3) {
-//
-//                }
             }
         }
     }
