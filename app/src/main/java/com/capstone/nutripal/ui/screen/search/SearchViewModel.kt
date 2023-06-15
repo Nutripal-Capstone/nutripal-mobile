@@ -27,12 +27,14 @@ class SearchViewModel(repository: FakeFoodRepository) : ViewModel(){
     val uiState: StateFlow<UiState<List<DataItem>>>
         get() = _uiState
 
-    suspend fun getSearch(name: String) {
-        val response = ApiConfig.getApiService().getSearchFoodList(
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlJpY2t5IiwiZW1haWwiOiJyaWNreWFudG93bUBnbWFpbC5jb20iLCJpYXQiOjE2ODY2MzI3MTgsImV4cCI6MTY4NjcxOTExOH0.k8VDbeD6cIjh5g26tX1lhBsuKpd18gFYKw0Uxo06yjg",
-            name,
-            0)
-        _uiState.value = UiState.Loading
-        _uiState.value = UiState.Success(response.data as List<DataItem>)
+    suspend fun getSearch(token: String, name: String) {
+        try {
+            val response = ApiConfig.getApiService().getSearchFoodList(
+                "Bearer $token", name, 0)
+//            _uiState.value = UiState.Loading
+            _uiState.value = UiState.Success(response.data as List<DataItem>)
+        } catch (e :Exception) {
+            Log.w("SearchViewModel", "onFailure: ${e.message}")
+        }
     }
 }

@@ -41,11 +41,14 @@ fun SearchScreen(
         )
     ),
 ) {
+    val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
+
     searchViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
+                if (userToken.value != "" )
                 searchViewModel.viewModelScope.launch {
-                    searchViewModel.getSearch( "")
+                    searchViewModel.getSearch( userToken.value, "")
                 }
             }
             is UiState.Success -> {
@@ -72,7 +75,7 @@ fun SearchContent (
         factory = ViewModelFactory(dataStore, FakeFoodRepository())
     ),
 ) {
-
+    val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
     var textValue by remember { mutableStateOf("") }
 
     LazyColumn(modifier = Modifier.padding(16.dp)) {
@@ -98,8 +101,10 @@ fun SearchContent (
                isDummy = false,
                onClick = {},
            ) {
-               searchViewModel.viewModelScope.launch {
-                   searchViewModel.getSearch(it)
+               if (userToken.value != "") {
+                   searchViewModel.viewModelScope.launch {
+                       searchViewModel.getSearch(userToken.value, it)
+                   }
                }
            }
            Spacer(modifier = Modifier.height(18.dp))
