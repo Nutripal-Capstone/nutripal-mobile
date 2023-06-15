@@ -20,7 +20,7 @@ import com.capstone.nutripal.ui.theme.White
 @Composable
 fun NutritionalChips(
     title: String,
-    value: Double
+    value: String
 ) {
 
     var backgroundColor = White
@@ -75,11 +75,11 @@ fun NutritionalChips(
 @Composable
 fun NutritionalChipsPreview() {
     NutriPalTheme {
-        Column() {
-            NutritionalChips("Cal", 7000.0)
-            NutritionalChips("Car", 7000.0)
-            NutritionalChips("Pro", 7000.0)
-            NutritionalChips("Fat", 7000.0)
-        }
+//        Column() {
+//            NutritionalChips("Cal", 7000.0)
+//            NutritionalChips("Car", 7000.0)
+//            NutritionalChips("Pro", 7000.0)
+//            NutritionalChips("Fat", 7000.0)
+//        }
     }
 }

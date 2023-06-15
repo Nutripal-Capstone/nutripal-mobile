@@ -48,15 +48,15 @@ fun HistoryFoodCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(70.dp)
                 ) {
                     AsyncImage(
                         model = "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .height(50.dp)
-                            .width(50.dp)
+                            .height(70.dp)
+                            .width(70.dp)
                             .clip(RoundedCornerShape(5.dp))
                             .border(1.dp, shadow, RoundedCornerShape(5.dp))
                     )
@@ -83,14 +83,15 @@ fun HistoryFoodCard(
                                     modifier = Modifier.weight(1f)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = "($portion)",
-                                    style = MaterialTheme.typography.subtitle2,
-                                    color = secondText,
-                                    modifier = Modifier.padding(2.dp).wrapContentWidth()
-                                )
+
                             }
                         }
+                        Text(
+                            text = "($portion)",
+                            style = MaterialTheme.typography.subtitle2,
+                            color = secondText,
+                            modifier = Modifier.padding(2.dp).wrapContentWidth()
+                        )
                         Spacer(modifier = Modifier.weight(1.0f))
                         FlowRow(
                             horizontalGap = 4.dp,
@@ -98,21 +99,20 @@ fun HistoryFoodCard(
                             alignment = Alignment.Start,
                         ) {
                             if (cal != null) {
-                                NutritionalChips("Cal", cal)
+                                NutritionalChips("Cal", cal.toString())
                             }
                             if (pro != null) {
-                                NutritionalChips("Pro", pro)
+                                NutritionalChips("Pro", pro.toString())
                             }
                             if (car != null) {
-                                NutritionalChips("Car", car)
+                                NutritionalChips("Car", car.toString())
                             }
                             if (fat != null) {
-                                NutritionalChips("Fat", fat)
+                                NutritionalChips("Fat", fat.toString())
                             }
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
                 Divider(
                     modifier = Modifier.height(1.dp),
@@ -128,6 +128,14 @@ fun HistoryFoodCard(
 @Composable
 fun DefaultPreview3() {
     NutriPalTheme {
-//        HistoryFoodCard( "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4", "Soto Ayam cak gunal gundul gugugugkg akskfkfs", "1 portion", )
+        HistoryFoodCard(
+            "https://media.licdn.com/dms/image/C5603AQEH6j97v2kP4A/profile-displayphoto-shrink_400_400/0/1648148613276?e=1690416000&v=beta&t=iCL-y40Z_a3BFcSssGQ304VAykVWC70FZ1DIFAA0VQ4",
+            "Soto Ayam cak gunal gundul gugugugkg akskfkfs",
+            "1 portion",
+            700.0,
+            700.0,
+            700.0,
+            700.0,
+        )
     }
 }

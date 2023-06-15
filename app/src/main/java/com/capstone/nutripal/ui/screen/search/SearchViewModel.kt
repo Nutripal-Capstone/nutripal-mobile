@@ -28,11 +28,16 @@ class SearchViewModel(repository: FakeFoodRepository) : ViewModel(){
         get() = _uiState
 
     suspend fun getSearch(name: String) {
-        val response = ApiConfig.getApiService().getSearchFoodList(
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlJpY2t5IiwiZW1haWwiOiJyaWNreWFudG93bUBnbWFpbC5jb20iLCJpYXQiOjE2ODY2MzI3MTgsImV4cCI6MTY4NjcxOTExOH0.k8VDbeD6cIjh5g26tX1lhBsuKpd18gFYKw0Uxo06yjg",
-            name,
-            0)
-        _uiState.value = UiState.Loading
-        _uiState.value = UiState.Success(response.data as List<DataItem>)
+        try {
+            val response = ApiConfig.getApiService().getSearchFoodList(
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFkaGFtIEtoYWxpZCIsImVtYWlsIjoicmlja3lhbnRvd21AZ21haWwuY29tIiwiaWF0IjoxNjg2NzQwOTIzLCJleHAiOjE2ODkzMzI5MjN9.iXeNxh5LzM39XkHVoWmukd1rmVeBFLWX_f7TH04896A",
+                name,
+                0
+            )
+            _uiState.value = UiState.Loading
+            _uiState.value = UiState.Success(response.data as List<DataItem>)
+        } catch (e: Exception){
+            _uiState.value = UiState.Error(errorMessage = e.message.toString())
+        }
     }
 }

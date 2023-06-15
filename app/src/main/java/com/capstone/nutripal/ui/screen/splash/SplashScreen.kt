@@ -1,4 +1,4 @@
-package com.capstone.nutripal.ui.screen
+package com.capstone.nutripal.ui.screen.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -6,7 +6,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,11 +34,12 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
         delay(2000)
         navController.popBackStack()
-        if (userToken.value == "") {
-            navController.navigate(Screen.Welcome.route)
-        } else {
-            navController.navigate(Screen.Home.route)
-        }
+//        if (userToken.value == "") {
+//            navController.navigate(Screen.Welcome.route)
+//        } else {
+//            navController.navigate(Screen.Home.route)
+//        }
+        navController.navigate(Screen.Home.route)
     }
 
     Box(
