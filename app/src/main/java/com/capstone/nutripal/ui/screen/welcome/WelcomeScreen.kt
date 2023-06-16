@@ -5,11 +5,14 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -205,21 +208,40 @@ fun HorizontalPagerWithIndicator(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 if (pagerState.currentPage == items.size - 1) {
-                    Button(
-                        onClick = {
-                            scope.launch {
-                                googleSignInClient.signOut().await()
-                            }
-                            val signInIntent = googleSignInClient.signInIntent
-                            launcher.launch(signInIntent)
-                        },
-                        shape = RoundedCornerShape(27.dp),
-                        contentPadding = PaddingValues(horizontal = 150.dp)
-                    ) {
-                        Text(
-                            text= "Login",
-                            fontWeight = FontWeight(700)
-                        )
+                    Column {
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    googleSignInClient.signOut().await()
+                                }
+                                val signInIntent = googleSignInClient.signInIntent
+                                launcher.launch(signInIntent)
+                            },
+                            shape = RoundedCornerShape(27.dp),
+                            contentPadding = PaddingValues(horizontal = 150.dp)
+                        ) {
+                            Text(
+                                text= "Login",
+                                fontWeight = FontWeight(700)
+                            )
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                scope.launch {
+                                    googleSignInClient.signOut().await()
+                                }
+                                val signInIntent = googleSignInClient.signInIntent
+                                launcher.launch(signInIntent)
+                            },
+                            shape = RoundedCornerShape(27.dp),
+                            contentPadding = PaddingValues(horizontal = 100.dp),
+                            border = BorderStroke(2.dp, IjoCompo)
+                        ) {
+                            Text(
+                                text= "I'm new, sign me up",
+                                fontWeight = FontWeight(700)
+                            )
+                        }
                     }
                 } else {
                     Button(
