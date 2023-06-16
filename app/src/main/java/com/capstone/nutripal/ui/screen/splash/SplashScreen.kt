@@ -34,12 +34,11 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
         delay(2000)
         navController.popBackStack()
-//        if (userToken.value == "") {
-//            navController.navigate(Screen.Welcome.route)
-//        } else {
-//            navController.navigate(Screen.Home.route)
-//        }
-        navController.navigate(Screen.Home.route)
+        if (userToken.value == "") {
+            navController.navigate(Screen.Welcome.route)
+        } else {
+            navController.navigate(Screen.Home.route)
+        }
     }
 
     Box(

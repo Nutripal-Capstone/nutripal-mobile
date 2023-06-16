@@ -1,6 +1,7 @@
 package com.capstone.nutripal.ui.screen.signup
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +21,7 @@ import androidx.navigation.NavController
 import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.screen.welcome.NutripalTopAppBar
 import com.capstone.nutripal.ui.theme.IjoCompo
+import com.capstone.nutripal.ui.theme.White
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -115,7 +117,7 @@ fun SecondSignupScreen(
                     onDismissRequest = {
                         expandedGoal = false
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().background(White)
                 ) {
                     goalOptions.forEach { selectionOption ->
                         DropdownMenuItem(

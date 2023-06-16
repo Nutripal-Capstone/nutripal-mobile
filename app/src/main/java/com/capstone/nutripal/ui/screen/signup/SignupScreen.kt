@@ -1,6 +1,7 @@
 package com.capstone.nutripal.ui.screen.signup
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.capstone.nutripal.ui.navigation.Screen
 import com.capstone.nutripal.ui.screen.welcome.NutripalTopAppBar
 import com.capstone.nutripal.ui.theme.IjoCompo
+import com.capstone.nutripal.ui.theme.White
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -189,6 +191,7 @@ fun SignupScreen(
                         expanded = false
                     },
                     modifier = Modifier.fillMaxWidth()
+                        .background(White)
                 ) {
                     genderOptions.forEach { selectionOption ->
                         DropdownMenuItem(
@@ -221,7 +224,10 @@ fun SignupScreen(
                     }
                 },
                 shape = RoundedCornerShape(27.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = IjoCompo,
+                )
             ) {
                 Text(
                     text = "Next",
