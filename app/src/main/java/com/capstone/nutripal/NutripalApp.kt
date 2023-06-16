@@ -40,6 +40,7 @@ import com.capstone.nutripal.ui.screen.detail.DetailScreen
 import com.capstone.nutripal.ui.screen.intakes.IntakesScreen
 import com.capstone.nutripal.ui.screen.intakes.IntakesViewModel
 import com.capstone.nutripal.ui.screen.mealplan.MealPlan
+import com.capstone.nutripal.ui.screen.profile.EditProfileScreen
 import com.capstone.nutripal.ui.screen.profile.ProfileScreen
 import com.capstone.nutripal.ui.screen.profile.ProfileViewModel
 import com.capstone.nutripal.ui.screen.search.SearchScreen
@@ -122,6 +123,9 @@ fun NutripalApp(
                             popUpTo("home") { inclusive = true }
                         }
                     },
+                    onFindSomeFood = {
+                        navController.navigate(Screen.SearchPage.route)
+                    },
                 )
             }
             composable(Screen.MealPlan.route) {
@@ -140,6 +144,9 @@ fun NutripalApp(
             composable(Screen.Profile.route) {
                 ProfileScreen(navController = navController, dataStore = dataStore,
                     profileViewModel = profileViewModel, context = context)
+            }
+            composable(Screen.EditProfile.route) {
+                EditProfileScreen(navController = navController)
             }
             composable(Screen.SearchPage.route) {
                 SearchScreen(

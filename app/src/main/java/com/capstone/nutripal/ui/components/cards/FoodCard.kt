@@ -30,6 +30,7 @@ import me.saket.swipe.SwipeableActionsBox
 
 @Composable
 fun HandleCourse(
+    page: String,
     objFood: FoodItem,
     foodId : String,
     cardTitle : String,
@@ -91,57 +92,84 @@ fun HandleCourse(
         startActions = if (isEaten) listOf(unmakan) else emptyList(),
         endActions = if (!isEaten) listOf(makan) else emptyList()
     ) {
-        if(isEaten) {
-            println("eaten")
-            EatenCourse(
-                image = image,
-                foodTitle = foodTitle,
-                portion = portion,
-                cal = cal,
-                pro = pro,
-                carbs= carbs,
-                fat = fat,
-                modifier = Modifier.clickable {
-                    navigateToDetail(foodId, objFood.servingId)
-                    println(foodId)
-                },
-                isEaten = true,
-                onEat = { eatFunction() },
-                onUneat = { unEatFunction() },
-                onDelete = { onDelete() },
-            )
-        } else {
-            println("not eaten")
-            EatenCourse(
-                image = image,
-                foodTitle = foodTitle,
-                portion = portion,
-                cal = cal,
-                pro = pro,
-                carbs= carbs,
-                fat = fat,
-                modifier = Modifier.clickable {
-                    navigateToDetail(foodId, objFood.servingId)
-                },
-                isEaten = false,
-                onEat = { eatFunction() },
-                onUneat = { unEatFunction() },
-                onDelete = { onDelete() },
-            )
-//            MainCourse(
-//                cardTitle = cardTitle,
-//                image = image,
-//                foodTitle = foodTitle,
-//                portion = portion,
-//                isEaten = isEaten,
-//                cal = cal,
-//                pro = pro,
-//                carbs= carbs,
-//                fat = fat,
-//                modifier = Modifier.clickable {
-//                    navigateToDetail(foodId)
-//                }
-//            )
+        if (page == "home") {
+            if(isEaten) {
+                println("eaten")
+                EatenCourse(
+                    image = image,
+                    foodTitle = foodTitle,
+                    portion = portion,
+                    cal = cal,
+                    pro = pro,
+                    carbs= carbs,
+                    fat = fat,
+                    modifier = Modifier.clickable {
+                        navigateToDetail(foodId, objFood.servingId)
+                        println(foodId)
+                    },
+                    isEaten = true,
+                    onEat = { eatFunction() },
+                    onUneat = { unEatFunction() },
+                    onDelete = { onDelete() },
+                )
+            } else {
+                println("not eaten")
+                EatenCourse(
+                    image = image,
+                    foodTitle = foodTitle,
+                    portion = portion,
+                    cal = cal,
+                    pro = pro,
+                    carbs= carbs,
+                    fat = fat,
+                    modifier = Modifier.clickable {
+                        navigateToDetail(foodId, objFood.servingId)
+                    },
+                    isEaten = false,
+                    onEat = { eatFunction() },
+                    onUneat = { unEatFunction() },
+                    onDelete = { onDelete() },
+                )
+            }
+        } else if (page == "mealplan") {
+            if(eatStatus) {
+                println("eaten")
+                EatenCourse(
+                    image = image,
+                    foodTitle = foodTitle,
+                    portion = portion,
+                    cal = cal,
+                    pro = pro,
+                    carbs= carbs,
+                    fat = fat,
+                    modifier = Modifier.clickable {
+                        navigateToDetail(foodId, objFood.servingId)
+                        println(foodId)
+                    },
+                    isEaten = true,
+                    onEat = { eatFunction() },
+                    onUneat = { unEatFunction() },
+                    onDelete = { onDelete() },
+                )
+            } else {
+                println("not eaten")
+                EatenCourse(
+                    image = image,
+                    foodTitle = foodTitle,
+                    portion = portion,
+                    cal = cal,
+                    pro = pro,
+                    carbs= carbs,
+                    fat = fat,
+                    modifier = Modifier.clickable {
+                        navigateToDetail(foodId, objFood.servingId)
+                    },
+                    isEaten = false,
+                    onEat = { eatFunction() },
+                    onUneat = { unEatFunction() },
+                    onDelete = { onDelete() },
+                )
+            }
         }
     }
 
@@ -293,12 +321,11 @@ fun EatenCourse(
 ) {
     // dropdown more
     val isMenuOpen = remember { mutableStateOf(false) }
-    val menuItemsMealPlan = listOf("Re-generate", "Eat", "Delete")
+    val menuItemsMealPlan = listOf("Eat", "Delete")
     val menuItemsEaten = listOf("Un-Eat")
     val selectedItem = remember { mutableStateOf("") }
 
     when(selectedItem.value) {
-        ("Re-generate") -> {}
         ("Eat") -> {
             onEat()
             selectedItem.value = ""

@@ -124,7 +124,7 @@ fun ProfileContent(
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(modifier = Modifier.fillMaxWidth()){
                     Text(
-                        text = data.name.toString(),
+                        text = data.name,
                         style = MaterialTheme.typography.body2,
                         modifier = if (loading) Modifier
                             .shimmerEffect()
@@ -140,7 +140,9 @@ fun ProfileContent(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedButton(
-                        onClick = {},
+                        onClick = {
+                            navController.navigate(Screen.EditProfile.route)
+                        },
                         shape = RoundedCornerShape(27.dp),
                         border = BorderStroke(1.dp, IjoCompo),
                         modifier = Modifier.fillMaxWidth(),
@@ -171,21 +173,19 @@ fun ProfileContent(
                         .fillMaxWidth()
                         .padding(14.dp)
                     ) {
-                        BodyInfoItem(type = "gender", value = data.gender.toString())
+                        BodyInfoItem(type = "gender", value = data.gender)
                         Spacer(modifier = Modifier.height(6.dp))
                         BodyInfoItem(type = "age", value = "${data.age} years old")
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "height", value = "${data.height.toString()} cm")
+                        BodyInfoItem(type = "height", value = "${data.height} cm")
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "weight", value = "${data.weight.toString()} kg")
+                        BodyInfoItem(type = "weight", value = "${data.weight} kg")
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "mealplan", value = "${data.mealsPerDay.toString()} meals per day")
+                        BodyInfoItem(type = "activity", value = data.activityLevel)
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "activity", value = data.activityLevel.toString())
+                        BodyInfoItem(type = "goals", value = data.goal)
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "goals", value = data.goal.toString())
-                        Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "goals", value = data.dietType.toString())
+                        BodyInfoItem(type = "goals", value = data.dietType)
                     }
                 }
             }

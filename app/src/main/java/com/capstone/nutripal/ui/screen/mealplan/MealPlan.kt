@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
@@ -28,13 +29,10 @@ import com.capstone.nutripal.ui.ViewModelFactory
 import com.capstone.nutripal.ui.common.UiState
 import com.capstone.nutripal.ui.components.cards.DailyCardAnalysis
 import com.capstone.nutripal.ui.components.cards.HandleCourse
-import com.capstone.nutripal.ui.theme.NutriPalTheme
-import com.capstone.nutripal.ui.theme.White
 import kotlinx.coroutines.launch
 import com.capstone.nutripal.model.DataTracker
 import com.capstone.nutripal.ui.components.general.MealPlanNotFound
-import com.capstone.nutripal.ui.theme.secondText
-import com.capstone.nutripal.ui.theme.shadow
+import com.capstone.nutripal.ui.theme.*
 
 
 @Composable
@@ -119,9 +117,9 @@ fun MealPlanContent (
                            style = MaterialTheme.typography.body2
                        )
                        // for the dropdown
-                       Box() {
+                       Box {
                            Icon(
-                               imageVector = Icons.Filled.MoreVert,
+                               imageVector = Icons.Filled.Autorenew,
                                contentDescription = null,
                                tint = secondText,
                                modifier = Modifier
@@ -147,14 +145,14 @@ fun MealPlanContent (
                        .fillMaxWidth()
                        .height(5.dp))
                    DailyCardAnalysis(
-                       calorie = 10.0,
-                       calorieNeeded = 0.0,
-                       protein = 10.0,
-                       proteinNeeded = 0.0,
-                       carbs = 10.0,
-                       carbsNeeded = 0.0,
-                       fat = 10.0,
-                       fatNeeded = 0.0,
+                       calorie = data.wholeNutrition.calories.toString(),
+                       calorieNeeded = "",
+                       protein = data.wholeNutrition.protein.toString(),
+                       proteinNeeded = "",
+                       carbs = data.wholeNutrition.carbohydrate.toString(),
+                       carbsNeeded = "",
+                       fat = data.wholeNutrition.fat.toString(),
+                       fatNeeded = "",
                        isMealPlan = true,
                    )
                    Spacer(modifier = Modifier
@@ -171,12 +169,13 @@ fun MealPlanContent (
                            .fillMaxWidth()
                            .height(20.dp))
                    } else {
-                       Text(
-                           "Breakfast",
-                           style = MaterialTheme.typography.body2
-                       )
+                       JudulPlan("Breakfast") {
+                           // TODO input on regenerate meal
+                       }
+                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                        for (item in data.mealPlan.breakfast) {
                            HandleCourse(
+                               "mealplan",
                                item,
                                item.foodId,
                                item.foodId,
@@ -207,6 +206,7 @@ fun MealPlanContent (
                            .height(5.dp))
                        for (item in data.eatenFood.breakfast) {
                            HandleCourse(
+                               "mealplan",
                                item,
                                item.foodId,
                                item.foodId,
@@ -235,14 +235,16 @@ fun MealPlanContent (
                                .fillMaxWidth()
                                .height(5.dp))
                        }
-                       Text(
-                           "Lunch",
-                           style = MaterialTheme.typography.body2
-                       )
+                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                       JudulPlan("Lunch") {
+                           // TODO input on regenerate meal
+                       }
+                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                        for (item in data.mealPlan.lunch) {
                            println("ini mealplan lunch")
                            println(item)
                            HandleCourse(
+                               "mealplan",
                                item,
                                item.foodId,
                                item.foodId,
@@ -273,6 +275,7 @@ fun MealPlanContent (
                        }
                        for (item in data.eatenFood.lunch) {
                            HandleCourse(
+                               "mealplan",
                                item,
                                item.foodId,
                                item.foodId,
@@ -302,12 +305,14 @@ fun MealPlanContent (
                                .height(5.dp))
                        }
 
-                       Text(
-                           "Dinner",
-                           style = MaterialTheme.typography.body2
-                       )
+                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                       JudulPlan("Dinner") {
+                           // TODO input on regenerate meal
+                       }
+                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                        for (item in data.mealPlan.dinner) {
                            HandleCourse(
+                               "mealplan",
                                item,
                                item.foodId,
                                item.foodId,
@@ -339,6 +344,7 @@ fun MealPlanContent (
 
                        for (item in data.eatenFood.dinner) {
                            HandleCourse(
+                               "mealplan",
                                item,
                                item.foodId,
                                item.foodId,
@@ -367,10 +373,71 @@ fun MealPlanContent (
                                .fillMaxWidth()
                                .height(5.dp))
                        }
+                       Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+
+                       Row(
+                           modifier = Modifier.fillMaxWidth(),
+                           horizontalArrangement = Arrangement.Center
+                       ) {
+                           Text(
+                               text = "Find Food to Add",
+                               style = MaterialTheme.typography.body2,
+                               color = IjoCompo,
+                               textDecoration = TextDecoration.Underline,
+                               modifier = Modifier.clickable {
+                                   onFindSomeFood()
+                               }
+                           )
+                       }
                    }
                }
            }
        }
+    }
+}
+
+@Composable
+fun JudulPlan(
+    judul: String,
+    onRegenerate: () -> Unit
+) {
+    val menuRegeneratePlan = listOf("Re-generate")
+    val selectedPlanToRegen = remember { mutableStateOf("") }
+    val isMenuOpen = remember { mutableStateOf(false) }
+
+    if(selectedPlanToRegen.value === "Re-generate") {
+        onRegenerate()
+    }
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(
+            judul,
+            style = MaterialTheme.typography.body2
+        )
+
+        Box() {
+            Icon(
+                imageVector = Icons.Filled.Autorenew,
+                contentDescription = null,
+                tint = secondText,
+                modifier = Modifier
+                    .clickable { isMenuOpen.value = true }
+            )
+            DropdownMenu(
+                expanded = isMenuOpen.value,
+                onDismissRequest = { isMenuOpen.value = false },
+                modifier = Modifier.border(0.5.dp, shadow, RectangleShape)
+            ) {
+                menuRegeneratePlan.forEach { item ->
+                    DropdownMenuItem(onClick = {
+                        selectedPlanToRegen.value = item
+                        isMenuOpen.value = false
+                    }) {
+                        Text(item)
+                    }
+                }
+            }
+        }
     }
 }
 

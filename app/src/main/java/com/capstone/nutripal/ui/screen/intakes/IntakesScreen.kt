@@ -71,14 +71,14 @@ fun IntakesScreen(
                             .fillMaxWidth()
                             .height(5.dp))
                         DailyCardAnalysis(
-                            calorie = eatenNutrition.calories,
-                            calorieNeeded = nutritionGoal.calorieGoal.toDouble(),
-                            protein = eatenNutrition.protein,
-                            proteinNeeded = nutritionGoal.proteinGoal.toDouble(),
-                            carbs = eatenNutrition.carbohydrate,
-                            carbsNeeded = nutritionGoal.carbohydrateGoal.toDouble(),
-                            fat = eatenNutrition.fat,
-                            fatNeeded = nutritionGoal.fatGoal.toDouble(),
+                            calorie = eatenNutrition.calories.toString(),
+                            calorieNeeded = nutritionGoal.calorieGoal.toString(),
+                            protein = eatenNutrition.protein.toString(),
+                            proteinNeeded = nutritionGoal.proteinGoal.toString(),
+                            carbs = eatenNutrition.carbohydrate.toString(),
+                            carbsNeeded = nutritionGoal.carbohydrateGoal.toString(),
+                            fat = eatenNutrition.fat.toString(),
+                            fatNeeded = nutritionGoal.fatGoal.toString(),
                             isMealPlan = false
                         )
                         Spacer(modifier = Modifier

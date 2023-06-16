@@ -37,6 +37,13 @@ interface ApiService {
         @Header("Authorization") token: String
     ): ProfileResponse
 
+    @Headers("Content-Type: application/json")
+    @PUT("profile")
+    suspend fun updateProfileDetail(
+        @Header("Authorization") token: String,
+        @Body registerRequest: RegisterRequest
+    ): ProfileResponse
+
     @GET("tracker/history")
     suspend fun getIntakes(
         @Header("Authorization") token: String,

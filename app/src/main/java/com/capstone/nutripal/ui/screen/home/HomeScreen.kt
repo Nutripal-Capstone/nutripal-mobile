@@ -29,6 +29,7 @@ import com.capstone.nutripal.ui.components.cards.HomeCardAnalysis
 import com.capstone.nutripal.ui.components.general.SearchBar
 import com.capstone.nutripal.ui.components.badges.StatusChips
 import com.capstone.nutripal.ui.components.cards.HandleCourse
+import com.capstone.nutripal.ui.components.general.MealPlanNotFound
 import com.capstone.nutripal.ui.screen.mealplan.MealPlanViewModel
 import com.capstone.nutripal.ui.theme.*
 
@@ -38,6 +39,7 @@ fun HomeScreen(
     navigateToDetail: (String, String) -> Unit,
     onSearchbarClicked: () -> Unit,
     navigateToMealPlan: () -> Unit,
+    onFindSomeFood: () -> Unit,
     context: Context = LocalContext.current,
     dataStore: StoreDataUser = StoreDataUser(context),
     homeViewModel: HomeViewModel = viewModel(
@@ -146,79 +148,81 @@ fun HomeScreen(
                     .padding(16.dp)
 
             ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            "Your Next Meal",
-                            style = MaterialTheme.typography.body2
-                        )
+                if (resultMealPlans?.isNotEmpty() == false && resultEatenFoods?.isNotEmpty() == false) {
+                    MealPlanNotFound(
+                        onClickRecommend = {},
+                        onAddSomeFood = { onFindSomeFood() }
+                    )
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp))
+                } else {
+                    Column(modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier
-                                .wrapContentSize()
-                                .clickable {
-                                    navigateToMealPlan()
-                                },
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                "see more",
-                                style = MaterialTheme.typography.subtitle1,
-                                color = disabledText,
-                                textDecoration = TextDecoration.Underline
+                                "Your Next Meal",
+                                style = MaterialTheme.typography.body2
                             )
-                            Icon(
-                                imageVector = Icons.Filled.ChevronRight,
-                                tint = disabledText,
-                                contentDescription = "Food Search"
+                            Row(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .clickable {
+                                        navigateToMealPlan()
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    "see more",
+                                    style = MaterialTheme.typography.subtitle1,
+                                    color = disabledText,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                                Icon(
+                                    imageVector = Icons.Filled.ChevronRight,
+                                    tint = disabledText,
+                                    contentDescription = "Food Search"
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        val firstFoodItem = resultMealPlans?.firstOrNull()
+                        if (firstFoodItem != null) {
+                            HandleCourse(
+                                "home",
+                                firstFoodItem,
+                                firstFoodItem.foodId,
+                                firstFoodItem.id.toString(),
+                                "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                firstFoodItem.foodName,
+                                firstFoodItem.servingDescription,
+                                false,
+                                firstFoodItem.calories.toString(),
+                                firstFoodItem.protein.toString(),
+                                firstFoodItem.carbohydrate.toString(),
+                                firstFoodItem.fat.toString(),
+                                navigateToDetail = navigateToDetail,
+                                onSwipeEat = { food ->
+                                    homeViewModel.onEaten(food)
+                                },
+                                onSwipeUneat = { food ->
+                                    homeViewModel.onUneaten(food)
+                                },
+                                onEat = {
+                                    mealPlanViewModel.postEatenFood(userToken.value, firstFoodItem.id)
+                                },
+                                onUneat = {
+                                    mealPlanViewModel.deleteEatenFood(userToken.value, firstFoodItem.id)
+                                },
+                                onDelete = {
+                                    mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, firstFoodItem.id)
+                                },
                             )
                         }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    val firstFoodItem = resultMealPlans?.firstOrNull()
-                    if (firstFoodItem != null) {
-                        HandleCourse(
-                            firstFoodItem,
-                            firstFoodItem.foodId,
-                            firstFoodItem.id.toString(),
-                            "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                            firstFoodItem.foodName,
-                            firstFoodItem.servingDescription,
-                            false,
-                            firstFoodItem.calories.toString(),
-                            firstFoodItem.protein.toString(),
-                            firstFoodItem.carbohydrate.toString(),
-                            firstFoodItem.fat.toString(),
-                            navigateToDetail = navigateToDetail,
-                            onSwipeEat = { food ->
-                                homeViewModel.onEaten(food)
-//                                currentCalories += food.calories.toInt()
-//                                currentProtein += food.protein.toInt()
-//                                currentCarbs += food.carbohydrate.toInt()
-//                                currentFat += food.fat.toInt()
-                            },
-                            onSwipeUneat = { food ->
-                                homeViewModel.onUneaten(food)
-//                                currentCalories -= food.calories.toInt()
-//                                currentProtein -= food.protein.toInt()
-//                                currentCarbs -= food.carbohydrate.toInt()
-//                                currentFat -= food.fat.toInt()
-                            },
-                            onEat = {
-                                mealPlanViewModel.postEatenFood(userToken.value, firstFoodItem.id)
-                            },
-                            onUneat = {
-                                mealPlanViewModel.deleteEatenFood(userToken.value, firstFoodItem.id)
-                            },
-                            onDelete = {
-                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, firstFoodItem.id)
-                            },
-                        )
-                    }
 //                    resultMealPlans?.forEach { foodItem ->
 //                        // kalo belum dimakan masuk sini
 //                        HandleCourse(
@@ -251,79 +255,73 @@ fun HomeScreen(
 //                            },
 //                        )
 //                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            "Eaten Meal",
-                            style = MaterialTheme.typography.body2
-                        )
+                        Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             modifier = Modifier
-                                .wrapContentSize()
-                                .clickable {
-                                    navigateToMealPlan()
-                                },
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                "see more",
-                                style = MaterialTheme.typography.subtitle1,
-                                color = disabledText,
-                                textDecoration = TextDecoration.Underline
+                                "Eaten Meal",
+                                style = MaterialTheme.typography.body2
                             )
-                            Icon(
-                                imageVector = Icons.Filled.ChevronRight,
-                                tint = disabledText,
-                                contentDescription = "Food Search"
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .clickable {
+                                        navigateToMealPlan()
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    "see more",
+                                    style = MaterialTheme.typography.subtitle1,
+                                    color = disabledText,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                                Icon(
+                                    imageVector = Icons.Filled.ChevronRight,
+                                    tint = disabledText,
+                                    contentDescription = "Food Search"
+                                )
+                            }
                         }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    resultEatenFoods?.forEach { foodItem ->
-                        // kalo udah dimakan masuk sini
-                        HandleCourse(
-                            foodItem,
-                            foodItem.foodId,
-                            foodItem.id.toString(),
-                            "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                            foodItem.foodName,
-                            foodItem.servingDescription,
-                            true,
-                            foodItem.calories.toString(),
-                            foodItem.protein.toString(),
-                            foodItem.carbohydrate.toString(),
-                            foodItem.fat.toString(),
-                            navigateToDetail = navigateToDetail,
-                            onSwipeEat = { food ->
-                                homeViewModel.onEaten(food)
-//                                currentCalories += food.calories.toInt()
-//                                currentProtein += food.protein.toInt()
-//                                currentCarbs += food.carbohydrate.toInt()
-//                                currentFat += food.fat.toInt()
-                            },
-                            onSwipeUneat = { food ->
-                                homeViewModel.onUneaten(food)
-//                                currentCalories -= food.calories.toInt()
-//                                currentProtein -= food.protein.toInt()
-//                                currentCarbs -= food.carbohydrate.toInt()
-//                                currentFat -= food.fat.toInt()
-                            },
-                            onEat = {
-                                mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
-                            },
-                            onUneat = {
-                                mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
-                            },
-                            onDelete = {
-                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
-                            },
-                        )
                         Spacer(modifier = Modifier.height(8.dp))
+                        resultEatenFoods?.forEach { foodItem ->
+                            // kalo udah dimakan masuk sini
+                            HandleCourse(
+                                "home",
+                                foodItem,
+                                foodItem.foodId,
+                                foodItem.id.toString(),
+                                "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                foodItem.foodName,
+                                foodItem.servingDescription,
+                                true,
+                                foodItem.calories.toString(),
+                                foodItem.protein.toString(),
+                                foodItem.carbohydrate.toString(),
+                                foodItem.fat.toString(),
+                                navigateToDetail = navigateToDetail,
+                                onSwipeEat = { food ->
+                                    homeViewModel.onEaten(food)
+                                },
+                                onSwipeUneat = { food ->
+                                    homeViewModel.onUneaten(food)
+                                },
+                                onEat = {
+                                    mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
+                                },
+                                onUneat = {
+                                    mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
+                                },
+                                onDelete = {
+                                    mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
+                                },
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 }
             }

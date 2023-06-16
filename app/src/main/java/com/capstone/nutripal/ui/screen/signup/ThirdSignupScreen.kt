@@ -89,7 +89,10 @@ fun ThirdSignupScreen (
                     }
                 },
                 shape = RoundedCornerShape(27.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = IjoCompo,
+                )
             ) {
                 androidx.compose.material3.Text(
                     text = "Next",
