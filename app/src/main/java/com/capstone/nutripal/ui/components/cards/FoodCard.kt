@@ -94,7 +94,6 @@ fun HandleCourse(
     ) {
         if (page == "home") {
             if(isEaten) {
-                println("eaten")
                 EatenCourse(
                     image = image,
                     foodTitle = foodTitle,
@@ -113,7 +112,6 @@ fun HandleCourse(
                     onDelete = { onDelete() },
                 )
             } else {
-                println("not eaten")
                 EatenCourse(
                     image = image,
                     foodTitle = foodTitle,
@@ -133,7 +131,6 @@ fun HandleCourse(
             }
         } else if (page == "mealplan") {
             if(eatStatus) {
-                println("eaten")
                 EatenCourse(
                     image = image,
                     foodTitle = foodTitle,
@@ -152,7 +149,6 @@ fun HandleCourse(
                     onDelete = { onDelete() },
                 )
             } else {
-                println("not eaten")
                 EatenCourse(
                     image = image,
                     foodTitle = foodTitle,

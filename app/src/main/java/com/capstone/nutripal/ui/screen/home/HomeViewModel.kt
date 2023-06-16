@@ -2,12 +2,19 @@ package com.capstone.nutripal.ui.screen.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.capstone.nutripal.api.ApiConfig
 import com.capstone.nutripal.model.*
 import com.capstone.nutripal.ui.common.UiState
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeViewModel : ViewModel() {
     private val _uiState: MutableStateFlow<UiState<String>> = MutableStateFlow(UiState.Loading)
@@ -19,9 +26,6 @@ class HomeViewModel : ViewModel() {
 
     private val _resultMealPlans: MutableStateFlow<MutableList<FoodItem>?> = MutableStateFlow(null)
     val resultMealPlans = _resultMealPlans.asStateFlow()
-
-//    private val _resultEatenNutrition: MutableStateFlow<EatenNutrition> = MutableStateFlow(EatenNutrition())
-//    val resultEatenNutrition = _resultEatenNutrition.asStateFlow()
 
     private val _resultNutritionGoal: MutableStateFlow<NutritionGoal> = MutableStateFlow(NutritionGoal())
     val resultNutritionGoal = _resultNutritionGoal.asStateFlow()
@@ -37,6 +41,9 @@ class HomeViewModel : ViewModel() {
 
     private val _currentFat = MutableStateFlow(0)
     val currentFat = _currentFat.asStateFlow()
+
+    private val _loadingStateRecom = MutableStateFlow(false)
+    val loadingStateRecom = _loadingStateRecom.asStateFlow()
 
     suspend fun getAllFoods(token: String) {
         try {
@@ -69,8 +76,6 @@ class HomeViewModel : ViewModel() {
                 mealPlans.add(food)
             }
             _resultMealPlans.value = mealPlans
-
-//            _resultEatenNutrition.value = response.data.eatenNutrition
             _resultNutritionGoal.value = response.data.nutritionGoal
 
             _currentCalories.value = response.data.eatenNutrition.calories.toInt()
@@ -78,15 +83,39 @@ class HomeViewModel : ViewModel() {
             _currentCarbs.value = response.data.eatenNutrition.carbohydrate.toInt()
             _currentFat.value = response.data.eatenNutrition.fat.toInt()
 
-            println("UNEATEN FOODS IN VIEWMODEL")
-            println(_resultMealPlans.value)
-
-            println("EATEN FOODS IN VIEWMODEL")
-            println(_resultEatenFoods.value)
-
         } catch (e: Exception) {
             Log.w("HomeViewModel", "onFailure: ${e.message}")
         }
+    }
+
+    fun getRecommendation(token: String, mealTime: String = "") {
+        _loadingStateRecom.value = true
+
+        val client = ApiConfig.getApiService().getRecommendation("Bearer $token", mealTime)
+        client.enqueue(object : Callback<DefaultResponse> {
+            override fun onResponse(
+                call: Call<DefaultResponse>,
+                response: Response<DefaultResponse>
+            ) {
+                if (response.isSuccessful) {
+                    viewModelScope.launch {
+                        getAllFoods(token)
+                    }
+                    _loadingStateRecom.value = false
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<DefaultResponse>() {}.type
+                    val errorResponse: DefaultResponse? = gson.fromJson(response.errorBody()?.charStream(), type)
+                    println(errorResponse?.message)
+                    Log.e("HomeViewModel", "onFailure: ${response.message()}")
+                    _loadingStateRecom.value = false
+                }
+            }
+            override fun onFailure(call: Call<DefaultResponse>, t: Throwable) {
+                _loadingStateRecom.value = false
+                Log.e("HomeViewModel", "onFailure: failed to fetch data")
+            }
+        })
     }
 
     fun onEaten(food: FoodItem) {
@@ -117,6 +146,12 @@ class HomeViewModel : ViewModel() {
         _currentProtein.value -= food.protein.toInt()
         _currentCarbs.value -= food.carbohydrate.toInt()
         _currentFat.value -= food.fat.toInt()
+    }
+
+    fun onDelete(food: FoodItem) {
+        _resultMealPlans.value = _resultMealPlans.value?.toMutableList()?.apply {
+            remove(food)
+        }
     }
 
 }

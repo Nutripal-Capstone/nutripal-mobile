@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -47,6 +44,7 @@ fun MealPlan(
     onFindSomeFood: () -> Unit,
 ) {
     val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
+    val loadingStateRecom by mealPlanViewModel.loadingStateRecom.collectAsState()
 
     mealPlanViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -59,10 +57,8 @@ fun MealPlan(
             }
             is UiState.Success -> {
                 val data = uiState.data
-                println("ini data meal plan")
-                println(data.mealPlan)
                 if (userToken.value != "") {
-                    MealPlanContent(data, userToken.value, mealPlanViewModel, navigateToDetail, onFindSomeFood)
+                    MealPlanContent(loadingStateRecom, data, userToken.value, mealPlanViewModel, navigateToDetail, onFindSomeFood)
                 }
             }
             is UiState.Error -> {}
@@ -73,6 +69,7 @@ fun MealPlan(
 @SuppressLint("StateFlowValueCalledInComposition", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MealPlanContent (
+    isLoading: Boolean,
     data: DataTracker,
     userToken: String,
     mealPlanViewModel: MealPlanViewModel,
@@ -83,8 +80,11 @@ fun MealPlanContent (
     val isMenuOpen = remember { mutableStateOf(false) }
     val menuItemsContent = listOf("Re-generate meal plan")
     val selectedItem = remember { mutableStateOf("") }
-    println("INI MEALPLAN LUNCH DI MEALPLANCONTENT")
-    println(data.mealPlan.lunch)
+
+    if (selectedItem.value == "Re-generate meal plan") {
+        mealPlanViewModel.getRecommendation(userToken)
+        selectedItem.value = ""
+    }
 
     NutriPalTheme {
        Scaffold(
@@ -158,236 +158,256 @@ fun MealPlanContent (
                    Spacer(modifier = Modifier
                        .fillMaxWidth()
                        .height(10.dp))
-                   if (data.mealPlan.breakfast.isEmpty() && data.mealPlan.lunch.isEmpty() && data.mealPlan.dinner.isEmpty()
-                       && data.eatenFood.breakfast.isEmpty() && data.eatenFood.lunch.isEmpty() && data.eatenFood.dinner.isEmpty()
-                   ) {
-                       MealPlanNotFound(
-                           onClickRecommend = {},
-                           onAddSomeFood = {onFindSomeFood()}
-                       )
-                       Spacer(modifier = Modifier
-                           .fillMaxWidth()
-                           .height(20.dp))
-                   } else {
-                       JudulPlan("Breakfast") {
-                           // TODO input on regenerate meal
-                       }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                       for (item in data.mealPlan.breakfast) {
-                           HandleCourse(
-                               "mealplan",
-                               item,
-                               item.foodId,
-                               item.foodId,
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName,
-                               item.servingDescription,
-                               false,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = navigateToDetail,
-                               onEat = {
-                                   mealPlanViewModel.postEatenFood(userToken, item.id)
-                               },
-                               onUneat = {
-                                   mealPlanViewModel.deleteEatenFood(userToken, item.id)
-                               },
-                               onDelete = {
-                                   mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
-                               },
-                               onSwipeEat = {},
-                               onSwipeUneat = {},
-                           )
-                       }
-                       Spacer(modifier = Modifier
-                           .fillMaxWidth()
-                           .height(5.dp))
-                       for (item in data.eatenFood.breakfast) {
-                           HandleCourse(
-                               "mealplan",
-                               item,
-                               item.foodId,
-                               item.foodId,
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName,
-                               item.servingDescription,
-                               true,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = navigateToDetail,
-                               onEat = {
-                                   mealPlanViewModel.postEatenFood(userToken, item.id)
-                               },
-                               onUneat = {
-                                   mealPlanViewModel.deleteEatenFood(userToken, item.id)
-                               },
-                               onDelete = {
-                                   mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
-                               },
-                               onSwipeEat = {},
-                               onSwipeUneat = {},
-                           )
-                           Spacer(modifier = Modifier
-                               .fillMaxWidth()
-                               .height(5.dp))
-                       }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                       JudulPlan("Lunch") {
-                           // TODO input on regenerate meal
-                       }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                       for (item in data.mealPlan.lunch) {
-                           println("ini mealplan lunch")
-                           println(item)
-                           HandleCourse(
-                               "mealplan",
-                               item,
-                               item.foodId,
-                               item.foodId,
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName,
-                               item.servingDescription,
-                               false,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = navigateToDetail,
-                               onEat = {
-                                   mealPlanViewModel.postEatenFood(userToken, item.id)
-                               },
-                               onUneat = {
-                                   mealPlanViewModel.deleteEatenFood(userToken, item.id)
-                               },
-                               onDelete = {
-                                   mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
-                               },
-                               onSwipeEat = {},
-                               onSwipeUneat = {},
-                           )
-                           Spacer(modifier = Modifier
-                               .fillMaxWidth()
-                               .height(5.dp))
-                       }
-                       for (item in data.eatenFood.lunch) {
-                           HandleCourse(
-                               "mealplan",
-                               item,
-                               item.foodId,
-                               item.foodId,
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName,
-                               item.servingDescription,
-                               true,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = navigateToDetail,
-                               onEat = {
-                                   mealPlanViewModel.postEatenFood(userToken, item.id)
-                               },
-                               onUneat = {
-                                   mealPlanViewModel.deleteEatenFood(userToken, item.id)
-                               },
-                               onDelete = {
-                                   mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
-                               },
-                               onSwipeEat = {},
-                               onSwipeUneat = {},
-                           )
-                           Spacer(modifier = Modifier
-                               .fillMaxWidth()
-                               .height(5.dp))
-                       }
-
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                       JudulPlan("Dinner") {
-                           // TODO input on regenerate meal
-                       }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                       for (item in data.mealPlan.dinner) {
-                           HandleCourse(
-                               "mealplan",
-                               item,
-                               item.foodId,
-                               item.foodId,
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName,
-                               item.servingDescription,
-                               false,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = navigateToDetail,
-                               onEat = {
-                                   mealPlanViewModel.postEatenFood(userToken, item.id)
-                               },
-                               onUneat = {
-                                   mealPlanViewModel.deleteEatenFood(userToken, item.id)
-                               },
-                               onDelete = {
-                                   mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
-                               },
-                               onSwipeEat = {},
-                               onSwipeUneat = {},
-                           )
-                           Spacer(modifier = Modifier
-                               .fillMaxWidth()
-                               .height(5.dp))
-                       }
-
-                       for (item in data.eatenFood.dinner) {
-                           HandleCourse(
-                               "mealplan",
-                               item,
-                               item.foodId,
-                               item.foodId,
-                               "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                               item.foodName,
-                               item.servingDescription,
-                               true,
-                               item.calories.toString(),
-                               item.protein.toString(),
-                               item.carbohydrate.toString(),
-                               item.fat.toString(),
-                               navigateToDetail = navigateToDetail,
-                               onEat = {
-                                   mealPlanViewModel.postEatenFood(userToken, item.id)
-                               },
-                               onUneat = {
-                                   mealPlanViewModel.deleteEatenFood(userToken, item.id)
-                               },
-                               onDelete = {
-                                   mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
-                               },
-                               onSwipeEat = {},
-                               onSwipeUneat = {},
-                           )
-                           Spacer(modifier = Modifier
-                               .fillMaxWidth()
-                               .height(5.dp))
-                       }
-                       Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
-
-                       Row(
-                           modifier = Modifier.fillMaxWidth(),
-                           horizontalArrangement = Arrangement.Center
+                   if (isLoading) {
+                       Box(
+                           modifier = Modifier.fillMaxSize()
+                               .padding(16.dp),
                        ) {
-                           Text(
-                               text = "Find Food to Add",
-                               style = MaterialTheme.typography.body2,
-                               color = IjoCompo,
-                               textDecoration = TextDecoration.Underline,
-                               modifier = Modifier.clickable {
-                                   onFindSomeFood()
-                               }
+                           Box(
+                               modifier = Modifier
+                                   .wrapContentSize()
+                                   .align(Alignment.Center)
+                           ) {
+                               CircularProgressIndicator(
+                                   modifier = Modifier.size(50.dp),
+                               )
+                           }
+                       }
+                   } else {
+                       if (data.mealPlan.breakfast.isEmpty() && data.mealPlan.lunch.isEmpty() && data.mealPlan.dinner.isEmpty()
+                           && data.eatenFood.breakfast.isEmpty() && data.eatenFood.lunch.isEmpty() && data.eatenFood.dinner.isEmpty()
+                       ) {
+                           MealPlanNotFound(
+                               onClickRecommend = {
+                                   mealPlanViewModel.getRecommendation(userToken)
+                               },
+                               onAddSomeFood = {onFindSomeFood()}
                            )
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(20.dp))
+                       } else {
+                           JudulPlan("Breakfast") {
+                               mealPlanViewModel.getRecommendation(userToken, "breakfast")
+                           }
+                           Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                           for (item in data.mealPlan.breakfast) {
+                               HandleCourse(
+                                   "mealplan",
+                                   item,
+                                   item.foodId,
+                                   item.foodId,
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName,
+                                   item.servingDescription,
+                                   false,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = navigateToDetail,
+                                   onEat = {
+                                       mealPlanViewModel.postEatenFood(userToken, item.id)
+                                   },
+                                   onUneat = {
+                                       mealPlanViewModel.deleteEatenFood(userToken, item.id)
+                                   },
+                                   onDelete = {
+                                       mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
+                                   },
+                                   onSwipeEat = {},
+                                   onSwipeUneat = {},
+                               )
+                               Spacer(modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(5.dp))
+                           }
+                           Spacer(modifier = Modifier
+                               .fillMaxWidth()
+                               .height(5.dp))
+                           for (item in data.eatenFood.breakfast) {
+                               HandleCourse(
+                                   "mealplan",
+                                   item,
+                                   item.foodId,
+                                   item.foodId,
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName,
+                                   item.servingDescription,
+                                   true,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = navigateToDetail,
+                                   onEat = {
+                                       mealPlanViewModel.postEatenFood(userToken, item.id)
+                                   },
+                                   onUneat = {
+                                       mealPlanViewModel.deleteEatenFood(userToken, item.id)
+                                   },
+                                   onDelete = {
+                                       mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
+                                   },
+                                   onSwipeEat = {},
+                                   onSwipeUneat = {},
+                               )
+                               Spacer(modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(5.dp))
+                           }
+                           Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                           JudulPlan("Lunch") {
+                               mealPlanViewModel.getRecommendation(userToken, "lunch")
+                           }
+                           Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                           for (item in data.mealPlan.lunch) {
+                               HandleCourse(
+                                   "mealplan",
+                                   item,
+                                   item.foodId,
+                                   item.foodId,
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName,
+                                   item.servingDescription,
+                                   false,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = navigateToDetail,
+                                   onEat = {
+                                       mealPlanViewModel.postEatenFood(userToken, item.id)
+                                   },
+                                   onUneat = {
+                                       mealPlanViewModel.deleteEatenFood(userToken, item.id)
+                                   },
+                                   onDelete = {
+                                       mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
+                                   },
+                                   onSwipeEat = {},
+                                   onSwipeUneat = {},
+                               )
+                               Spacer(modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(5.dp))
+                           }
+                           for (item in data.eatenFood.lunch) {
+                               HandleCourse(
+                                   "mealplan",
+                                   item,
+                                   item.foodId,
+                                   item.foodId,
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName,
+                                   item.servingDescription,
+                                   true,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = navigateToDetail,
+                                   onEat = {
+                                       mealPlanViewModel.postEatenFood(userToken, item.id)
+                                   },
+                                   onUneat = {
+                                       mealPlanViewModel.deleteEatenFood(userToken, item.id)
+                                   },
+                                   onDelete = {
+                                       mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
+                                   },
+                                   onSwipeEat = {},
+                                   onSwipeUneat = {},
+                               )
+                               Spacer(modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(5.dp))
+                           }
+
+                           Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                           JudulPlan("Dinner") {
+                               mealPlanViewModel.getRecommendation(userToken, "dinner")
+                           }
+                           Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                           for (item in data.mealPlan.dinner) {
+                               HandleCourse(
+                                   "mealplan",
+                                   item,
+                                   item.foodId,
+                                   item.foodId,
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName,
+                                   item.servingDescription,
+                                   false,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = navigateToDetail,
+                                   onEat = {
+                                       mealPlanViewModel.postEatenFood(userToken, item.id)
+                                   },
+                                   onUneat = {
+                                       mealPlanViewModel.deleteEatenFood(userToken, item.id)
+                                   },
+                                   onDelete = {
+                                       mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
+                                   },
+                                   onSwipeEat = {},
+                                   onSwipeUneat = {},
+                               )
+                               Spacer(modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(5.dp))
+                           }
+
+                           for (item in data.eatenFood.dinner) {
+                               HandleCourse(
+                                   "mealplan",
+                                   item,
+                                   item.foodId,
+                                   item.foodId,
+                                   "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                   item.foodName,
+                                   item.servingDescription,
+                                   true,
+                                   item.calories.toString(),
+                                   item.protein.toString(),
+                                   item.carbohydrate.toString(),
+                                   item.fat.toString(),
+                                   navigateToDetail = navigateToDetail,
+                                   onEat = {
+                                       mealPlanViewModel.postEatenFood(userToken, item.id)
+                                   },
+                                   onUneat = {
+                                       mealPlanViewModel.deleteEatenFood(userToken, item.id)
+                                   },
+                                   onDelete = {
+                                       mealPlanViewModel.deleteFoodFromMealPlan(userToken, item.id)
+                                   },
+                                   onSwipeEat = {},
+                                   onSwipeUneat = {},
+                               )
+                               Spacer(modifier = Modifier
+                                   .fillMaxWidth()
+                                   .height(5.dp))
+                           }
+                           Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+
+                           Row(
+                               modifier = Modifier.fillMaxWidth(),
+                               horizontalArrangement = Arrangement.Center
+                           ) {
+                               Text(
+                                   text = "Find Food to Add",
+                                   style = MaterialTheme.typography.body2,
+                                   color = IjoCompo,
+                                   textDecoration = TextDecoration.Underline,
+                                   modifier = Modifier.clickable {
+                                       onFindSomeFood()
+                                   }
+                               )
+                           }
                        }
                    }
                }

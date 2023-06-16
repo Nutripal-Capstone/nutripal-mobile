@@ -18,6 +18,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
@@ -35,7 +36,6 @@ import com.capstone.nutripal.ui.theme.*
 
 @Composable
 fun HomeScreen(
-//    modifier: Modifier = Modifier,
     navigateToDetail: (String, String) -> Unit,
     onSearchbarClicked: () -> Unit,
     navigateToMealPlan: () -> Unit,
@@ -60,25 +60,11 @@ fun HomeScreen(
     val currentCarbs by homeViewModel.currentCarbs.collectAsState()
     val currentFat by homeViewModel.currentFat.collectAsState()
 
-//    var currentCalories by remember { mutableStateOf(homeViewModel.currentCalories.value) }
-//    var currentProtein by remember { mutableStateOf(homeViewModel.currentProtein.value) }
-//    var currentCarbs by remember { mutableStateOf(homeViewModel.currentCarbs.value) }
-//    var currentFat by remember { mutableStateOf(homeViewModel.currentFat.value) }
-
-//    var currentCalories by remember { mutableStateOf(resultEatenNutrition.calories) }
-//    var currentProtein by remember { mutableStateOf(resultEatenNutrition.protein) }
-//    var currentCarbs by remember { mutableStateOf(resultEatenNutrition.carbohydrate) }
-//    var currentFat by remember { mutableStateOf(resultEatenNutrition.fat) }
+    val loadingStateRecom by homeViewModel.loadingStateRecom.collectAsState()
 
     LaunchedEffect(key1 = true) {
         if (userToken.value != "") homeViewModel.getAllFoods(userToken.value)
     }
-
-    println("UNEATEN FOODS IN HOME")
-    println(resultMealPlans)
-
-    println("EATEN FOODS IN HOME")
-    println(resultEatenFoods)
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
@@ -142,185 +128,174 @@ fun HomeScreen(
                 }
             }
             // section putih bagian bawah
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-
-            ) {
-                if (resultMealPlans?.isNotEmpty() == false && resultEatenFoods?.isNotEmpty() == false) {
-                    MealPlanNotFound(
-                        onClickRecommend = {},
-                        onAddSomeFood = { onFindSomeFood() }
-                    )
-                    Spacer(modifier = Modifier
+            if (loadingStateRecom) {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .padding(16.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.Center)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(50.dp),
+                        )
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(20.dp))
-                } else {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                "Your Next Meal",
-                                style = MaterialTheme.typography.body2
-                            )
+                        .padding(16.dp)
+
+                ) {
+                    if (resultMealPlans?.isNotEmpty() == false && resultEatenFoods?.isNotEmpty() == false) {
+                        MealPlanNotFound(
+                            onClickRecommend = {
+                                if (userToken.value != "") homeViewModel.getRecommendation(userToken.value)
+                            },
+                            onAddSomeFood = { onFindSomeFood() }
+                        )
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp))
+                    } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
                             Row(
                                 modifier = Modifier
-                                    .wrapContentSize()
-                                    .clickable {
-                                        navigateToMealPlan()
-                                    },
+                                    .fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    "see more",
-                                    style = MaterialTheme.typography.subtitle1,
-                                    color = disabledText,
-                                    textDecoration = TextDecoration.Underline
+                                    "Your Next Meal",
+                                    style = MaterialTheme.typography.body2
                                 )
-                                Icon(
-                                    imageVector = Icons.Filled.ChevronRight,
-                                    tint = disabledText,
-                                    contentDescription = "Food Search"
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .clickable {
+                                            navigateToMealPlan()
+                                        },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        "see more",
+                                        style = MaterialTheme.typography.subtitle1,
+                                        color = disabledText,
+                                        textDecoration = TextDecoration.Underline
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.ChevronRight,
+                                        tint = disabledText,
+                                        contentDescription = "Food Search"
+                                    )
+                                }
                             }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        val firstFoodItem = resultMealPlans?.firstOrNull()
-                        if (firstFoodItem != null) {
-                            HandleCourse(
-                                "home",
-                                firstFoodItem,
-                                firstFoodItem.foodId,
-                                firstFoodItem.id.toString(),
-                                "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                                firstFoodItem.foodName,
-                                firstFoodItem.servingDescription,
-                                false,
-                                firstFoodItem.calories.toString(),
-                                firstFoodItem.protein.toString(),
-                                firstFoodItem.carbohydrate.toString(),
-                                firstFoodItem.fat.toString(),
-                                navigateToDetail = navigateToDetail,
-                                onSwipeEat = { food ->
-                                    homeViewModel.onEaten(food)
-                                },
-                                onSwipeUneat = { food ->
-                                    homeViewModel.onUneaten(food)
-                                },
-                                onEat = {
-                                    mealPlanViewModel.postEatenFood(userToken.value, firstFoodItem.id)
-                                },
-                                onUneat = {
-                                    mealPlanViewModel.deleteEatenFood(userToken.value, firstFoodItem.id)
-                                },
-                                onDelete = {
-                                    mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, firstFoodItem.id)
-                                },
-                            )
-                        }
-//                    resultMealPlans?.forEach { foodItem ->
-//                        // kalo belum dimakan masuk sini
-//                        HandleCourse(
-//                            foodItem,
-//                            foodItem.foodId,
-//                            foodItem.id.toString(),
-//                            "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-//                            foodItem.foodName,
-//                            foodItem.servingDescription,
-//                            false,
-//                            foodItem.calories.toString(),
-//                            foodItem.protein.toString(),
-//                            foodItem.carbohydrate.toString(),
-//                            foodItem.fat.toString(),
-//                            navigateToDetail = navigateToDetail,
-//                            onSwipeEat = { food ->
-//                                homeViewModel.onEaten(food)
-//                            },
-//                            onSwipeUneat = { food ->
-//                                homeViewModel.onUneaten(food)
-//                            },
-//                            onEat = {
-//                                mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
-//                            },
-//                            onUneat = {
-//                                mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
-//                            },
-//                            onDelete = {
-//                                mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
-//                            },
-//                        )
-//                    }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                "Eaten Meal",
-                                style = MaterialTheme.typography.body2
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    .clickable {
-                                        navigateToMealPlan()
-                                    },
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    "see more",
-                                    style = MaterialTheme.typography.subtitle1,
-                                    color = disabledText,
-                                    textDecoration = TextDecoration.Underline
-                                )
-                                Icon(
-                                    imageVector = Icons.Filled.ChevronRight,
-                                    tint = disabledText,
-                                    contentDescription = "Food Search"
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        resultEatenFoods?.forEach { foodItem ->
-                            // kalo udah dimakan masuk sini
-                            HandleCourse(
-                                "home",
-                                foodItem,
-                                foodItem.foodId,
-                                foodItem.id.toString(),
-                                "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
-                                foodItem.foodName,
-                                foodItem.servingDescription,
-                                true,
-                                foodItem.calories.toString(),
-                                foodItem.protein.toString(),
-                                foodItem.carbohydrate.toString(),
-                                foodItem.fat.toString(),
-                                navigateToDetail = navigateToDetail,
-                                onSwipeEat = { food ->
-                                    homeViewModel.onEaten(food)
-                                },
-                                onSwipeUneat = { food ->
-                                    homeViewModel.onUneaten(food)
-                                },
-                                onEat = {
-                                    mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
-                                },
-                                onUneat = {
-                                    mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
-                                },
-                                onDelete = {
-                                    mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
-                                },
-                            )
                             Spacer(modifier = Modifier.height(8.dp))
+                            val firstFoodItem = resultMealPlans?.firstOrNull()
+                            if (firstFoodItem != null) {
+                                HandleCourse(
+                                    "home",
+                                    firstFoodItem,
+                                    firstFoodItem.foodId,
+                                    firstFoodItem.id.toString(),
+                                    "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                    firstFoodItem.foodName,
+                                    firstFoodItem.servingDescription,
+                                    false,
+                                    firstFoodItem.calories.toString(),
+                                    firstFoodItem.protein.toString(),
+                                    firstFoodItem.carbohydrate.toString(),
+                                    firstFoodItem.fat.toString(),
+                                    navigateToDetail = navigateToDetail,
+                                    onSwipeEat = { food ->
+                                        homeViewModel.onEaten(food)
+                                    },
+                                    onSwipeUneat = { food ->
+                                        homeViewModel.onUneaten(food)
+                                    },
+                                    onEat = {
+                                        mealPlanViewModel.postEatenFood(userToken.value, firstFoodItem.id)
+                                    },
+                                    onUneat = {
+                                        mealPlanViewModel.deleteEatenFood(userToken.value, firstFoodItem.id)
+                                    },
+                                    onDelete = {
+                                        homeViewModel.onDelete(firstFoodItem)
+                                        mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, firstFoodItem.id)
+                                    },
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    "Eaten Meal",
+                                    style = MaterialTheme.typography.body2
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .clickable {
+                                            navigateToMealPlan()
+                                        },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        "see more",
+                                        style = MaterialTheme.typography.subtitle1,
+                                        color = disabledText,
+                                        textDecoration = TextDecoration.Underline
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.ChevronRight,
+                                        tint = disabledText,
+                                        contentDescription = "Food Search"
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            resultEatenFoods?.forEach { foodItem ->
+                                // kalo udah dimakan masuk sini
+                                HandleCourse(
+                                    "home",
+                                    foodItem,
+                                    foodItem.foodId,
+                                    foodItem.id.toString(),
+                                    "https://cdn.discordapp.com/attachments/1000437373240361102/1118062814079234058/no-image.png",
+                                    foodItem.foodName,
+                                    foodItem.servingDescription,
+                                    true,
+                                    foodItem.calories.toString(),
+                                    foodItem.protein.toString(),
+                                    foodItem.carbohydrate.toString(),
+                                    foodItem.fat.toString(),
+                                    navigateToDetail = navigateToDetail,
+                                    onSwipeEat = { food ->
+                                        homeViewModel.onEaten(food)
+                                    },
+                                    onSwipeUneat = { food ->
+                                        homeViewModel.onUneaten(food)
+                                    },
+                                    onEat = {
+                                        mealPlanViewModel.postEatenFood(userToken.value, foodItem.id)
+                                    },
+                                    onUneat = {
+                                        mealPlanViewModel.deleteEatenFood(userToken.value, foodItem.id)
+                                    },
+                                    onDelete = {
+                                        homeViewModel.onDelete(foodItem)
+                                        mealPlanViewModel.deleteFoodFromMealPlan(userToken.value, foodItem.id)
+                                    },
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
                         }
                     }
                 }

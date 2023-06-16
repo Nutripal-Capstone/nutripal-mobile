@@ -72,21 +72,14 @@ class ProfileViewModel : ViewModel(){
         goal: String,
         dietType: String,
     ) {
-        val registerRequest = RegisterRequest(name, height.toInt(), weight.toInt(),
-            gender, age.toInt(), activityLevel, goal, dietType)
-        val response = ApiConfig.getApiService().updateProfileDetail("Bearer $token",
-            registerRequest)
-        println("INI RESPONSE UPDATE DI VIEWMODEL")
-        println(response)
-//        try {
-//            val registerRequest = RegisterRequest(name, height.toInt(), weight.toInt(),
-//                gender, age.toInt(), activityLevel, goal, dietType)
-//            val response = ApiConfig.getApiService().updateProfileDetail("Bearer $token",
-//                registerRequest)
-//
-//        } catch (e: Exception) {
-//            e
-//            Log.w("ProfileViewModel", "onFailure updateProfileDetail: ${e.message}")
-//        }
+        try {
+            val registerRequest = RegisterRequest(name, height.toInt(), weight.toInt(),
+                gender, age.toInt(), activityLevel, goal, dietType)
+            val response = ApiConfig.getApiService().updateProfileDetail("Bearer $token",
+                registerRequest)
+
+        } catch (e: Exception) {
+            Log.w("ProfileViewModel", "onFailure updateProfileDetail: ${e.message}")
+        }
     }
 }

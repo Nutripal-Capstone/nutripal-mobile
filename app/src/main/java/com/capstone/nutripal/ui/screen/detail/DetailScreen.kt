@@ -262,14 +262,14 @@ fun DetailContent(
                         iron = data.iron
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "this food will exceed your daily nutrition needs",
-                        style = MaterialTheme.typography.subtitle2,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colors.error
-                    )
-                    Spacer(modifier = Modifier.height(3.dp))
+//                    Text(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        text = "this food will exceed your daily nutrition needs",
+//                        style = MaterialTheme.typography.subtitle2,
+//                        textAlign = TextAlign.Center,
+//                        color = MaterialTheme.colors.error
+//                    )
+//                    Spacer(modifier = Modifier.height(3.dp))
                     Button(
                         onClick = {
                             coroutineScope.launch {

@@ -74,8 +74,14 @@ interface ApiService {
     ): ReturnBodyEaten
 
     @DELETE("food/mealPlan")
-    suspend fun deleteFoodFromMealPlan(
+    fun deleteFoodFromMealPlan(
         @Header("Authorization") token: String,
         @Query("id") id: Int,
-    ): ReturnBodyEaten
+    ): Call<DefaultResponse>
+
+    @GET("food/recommend")
+    fun getRecommendation(
+        @Header("Authorization") token: String,
+        @Query("mealTime") mealTime: String,
+    ): Call<DefaultResponse>
 }

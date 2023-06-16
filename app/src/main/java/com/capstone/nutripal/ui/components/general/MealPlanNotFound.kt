@@ -56,7 +56,7 @@ NutriPalTheme() {
         Spacer(modifier = Modifier.height(10.dp))
         androidx.compose.material3.Button(
             onClick = {
-
+                onClickRecommend()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = androidx.compose.material3.ButtonDefaults.buttonColors(
