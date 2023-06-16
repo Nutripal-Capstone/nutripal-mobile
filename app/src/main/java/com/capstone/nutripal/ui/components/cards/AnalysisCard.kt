@@ -47,13 +47,13 @@ fun HomeCardAnalysis(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     HomeCardItem("Calorie", calorie, calorieNeeded)
-                    HomeCardItem("Carbohydrate", calorie, calorieNeeded)
+                    HomeCardItem("Carbohydrate", carbs, carbsNeeded)
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    HomeCardItem("Protein", calorie, calorieNeeded)
-                    HomeCardItem("Fat", calorie, calorieNeeded)
+                    HomeCardItem("Protein", protein, proteinNeeded)
+                    HomeCardItem("Fat", fat, fatNeeded)
                 }
             }
 //        }
@@ -125,18 +125,18 @@ fun HomeCardItem(
 
 @Composable
 fun DailyCardAnalysis(
-    calorie: Double,
-    calorieNeeded: Double,
-    protein: Double,
-    proteinNeeded: Double,
-    carbs: Double,
-    carbsNeeded: Double,
-    fat: Double,
-    fatNeeded: Double,
+    calorie: String,
+    calorieNeeded: String,
+    protein: String,
+    proteinNeeded: String,
+    carbs: String,
+    carbsNeeded: String,
+    fat: String,
+    fatNeeded: String,
     isMealPlan : Boolean,
     modifier: Modifier = Modifier,
 ) {
-    NutriPalTheme() {
+    NutriPalTheme {
         Surface(
             modifier = Modifier
                 .border(1.dp, shadow, RoundedCornerShape(10.dp)),
@@ -176,8 +176,8 @@ fun DailyCardAnalysis(
 @Composable
 fun DailyCardItem(
     title: String,
-    now: Double,
-    needed: Double,
+    now: String,
+    needed: String,
     isMealPlan: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -230,7 +230,7 @@ fun DailyCardItem(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = "$now",
+                text = "$now ${if (isMealPlan) "g" else ""}",
                 modifier = Modifier,
                 style = MaterialTheme.typography.body2
             )

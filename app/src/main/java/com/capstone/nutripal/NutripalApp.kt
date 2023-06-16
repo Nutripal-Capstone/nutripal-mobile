@@ -33,12 +33,16 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.capstone.nutripal.data.FakeFoodRepository
 import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.ui.navigation.NavigationItem
 import com.capstone.nutripal.ui.screen.detail.DetailScreen
-import com.capstone.nutripal.ui.screen.intakes.Intakes
+import com.capstone.nutripal.ui.screen.intakes.IntakesScreen
+import com.capstone.nutripal.ui.screen.intakes.IntakesViewModel
 import com.capstone.nutripal.ui.screen.mealplan.MealPlan
+import com.capstone.nutripal.ui.screen.profile.EditProfileScreen
 import com.capstone.nutripal.ui.screen.profile.ProfileScreen
+import com.capstone.nutripal.ui.screen.profile.ProfileViewModel
 import com.capstone.nutripal.ui.screen.search.SearchScreen
 import com.capstone.nutripal.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -55,6 +59,8 @@ fun NutripalApp(
     val dataStore = StoreDataUser(context)
     val viewModelFactory = ViewModelFactory(dataStore, Injection.provideRepository())
     val signupViewModel: SignupViewModel = viewModel(factory = viewModelFactory)
+    val intakesViewModel: IntakesViewModel = viewModel(factory = viewModelFactory)
+    val profileViewModel: ProfileViewModel = viewModel(factory = viewModelFactory)
 
     Scaffold(
         bottomBar = {
@@ -105,7 +111,8 @@ fun NutripalApp(
             }
             composable(Screen.Home.route) {
                 HomeScreen(
-                    navigateToDetail = { foodId ->
+                    navigateToDetail = { foodId, foodServingId ->
+                        navController.navigate(Screen.DetailPage.createRoute(foodId, foodServingId))
 //                        navController.navigate(Screen.DetailPage.createRoute(foodId))
                     },
                     onSearchbarClicked = {
@@ -115,6 +122,9 @@ fun NutripalApp(
                         navController.navigate(Screen.MealPlan.route) {
                             popUpTo("home") { inclusive = true }
                         }
+                    },
+                    onFindSomeFood = {
+                        navController.navigate(Screen.SearchPage.route)
                     },
                 )
             }
@@ -129,10 +139,14 @@ fun NutripalApp(
                 )
             }
             composable(Screen.Intakes.route) {
-                Intakes()
+                IntakesScreen(intakesViewModel = intakesViewModel, dataStore = dataStore)
             }
             composable(Screen.Profile.route) {
-                ProfileScreen(navController = navController)
+                ProfileScreen(navController = navController, dataStore = dataStore,
+                    profileViewModel = profileViewModel, context = context)
+            }
+            composable(Screen.EditProfile.route) {
+                EditProfileScreen(navController = navController)
             }
             composable(Screen.SearchPage.route) {
                 SearchScreen(

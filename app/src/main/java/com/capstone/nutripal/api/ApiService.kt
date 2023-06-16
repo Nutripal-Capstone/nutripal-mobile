@@ -37,10 +37,23 @@ interface ApiService {
         @Header("Authorization") token: String
     ): ProfileResponse
 
+    @Headers("Content-Type: application/json")
+    @PUT("profile")
+    suspend fun updateProfileDetail(
+        @Header("Authorization") token: String,
+        @Body registerRequest: RegisterRequest
+    ): ProfileResponse
+
+    @GET("tracker/history")
+    suspend fun getIntakes(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int
+    ): IntakesResponse
+
     @GET("tracker")
-    suspend fun getDayTracker(
-        @Header("Authorization") token: String
-    ): DayTrackerResponse
+    suspend fun getMainTracker(
+        @Header("Authorization") token: String,
+    ): TrackerResponse
 
     @POST("food/eaten")
     suspend fun postEatenFood(
@@ -61,8 +74,14 @@ interface ApiService {
     ): ReturnBodyEaten
 
     @DELETE("food/mealPlan")
-    suspend fun deleteFoodFromMealPlan(
+    fun deleteFoodFromMealPlan(
         @Header("Authorization") token: String,
         @Query("id") id: Int,
-    ): ReturnBodyEaten
+    ): Call<DefaultResponse>
+
+    @GET("food/recommend")
+    fun getRecommendation(
+        @Header("Authorization") token: String,
+        @Query("mealTime") mealTime: String,
+    ): Call<DefaultResponse>
 }

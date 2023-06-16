@@ -70,22 +70,29 @@ fun DetailScreen(
     navigateBack: () -> Unit,
     navigateToMealPlan : () -> Unit
 ) {
+    val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
+
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
-                viewModel.viewModelScope.launch {
-                    viewModel.getFoodById(foodId, servingId)
+                if (userToken.value != "") {
+                    viewModel.viewModelScope.launch {
+                        viewModel.getFoodById(userToken.value, foodId, servingId)
+                    }
                 }
             }
             is UiState.Success -> {
-                val data = uiState.data
-                DetailContent(
-                    data = data,
-                    onBackClick = navigateBack,
-                    detailViewModel = viewModel,
-                    navigateToMealPlan = navigateToMealPlan
+                if (userToken.value != "") {
+                    val data = uiState.data
+                    DetailContent(
+                        data = data,
+                        userToken = userToken.value,
+                        onBackClick = navigateBack,
+                        detailViewModel = viewModel,
+                        navigateToMealPlan = navigateToMealPlan
 
-                )
+                    )
+                }
             }
             is UiState.Error -> {}
         }
@@ -97,6 +104,7 @@ fun DetailScreen(
 fun DetailContent(
 //    image: String,
     data : DataDetail,
+    userToken: String,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     detailViewModel : DetailPageViewModel,
@@ -254,14 +262,14 @@ fun DetailContent(
                         iron = data.iron
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "this food will exceed your daily nutrition needs",
-                        style = MaterialTheme.typography.subtitle2,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colors.error
-                    )
-                    Spacer(modifier = Modifier.height(3.dp))
+//                    Text(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        text = "this food will exceed your daily nutrition needs",
+//                        style = MaterialTheme.typography.subtitle2,
+//                        textAlign = TextAlign.Center,
+//                        color = MaterialTheme.colors.error
+//                    )
+//                    Spacer(modifier = Modifier.height(3.dp))
                     Button(
                         onClick = {
                             coroutineScope.launch {
@@ -313,7 +321,7 @@ fun DetailContent(
                                     Column(modifier = Modifier.fillMaxWidth()) {
                                         androidx.compose.material3.Button(
                                             onClick = {
-                                                detailViewModel.addToMealPlan(data, selectedFoodTime)
+                                                detailViewModel.addToMealPlan(userToken, data, selectedFoodTime)
                                                 navigateToMealPlan()
                                             },
                                             modifier = Modifier.fillMaxWidth(),

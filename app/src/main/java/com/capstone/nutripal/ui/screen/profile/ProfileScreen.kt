@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.capstone.nutripal.R
 import com.capstone.nutripal.data.FakeFoodRepository
+import com.capstone.nutripal.di.Injection
 import com.capstone.nutripal.model.ProfileData
 import com.capstone.nutripal.model.StoreDataUser
 import com.capstone.nutripal.ui.ViewModelFactory
@@ -49,26 +50,27 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current as ComponentActivity,
-    dataStore: StoreDataUser = StoreDataUser(context),
-    profileViewModel: ProfileViewModel = viewModel(
-        factory = ViewModelFactory(dataStore, FakeFoodRepository())
-    ),
+    context: Context,
+    dataStore: StoreDataUser,
+    profileViewModel: ProfileViewModel,
     navController: NavController,
     ) {
     val userToken = dataStore.getUserJwtToken().collectAsState(initial = "")
     profileViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
-                ProfileContent(ProfileData(), true, navController = navController)
-                profileViewModel.viewModelScope.launch {
-                    profileViewModel.getProfileDetail(userToken.value)
+                ProfileContent(ProfileData(), true, navController = navController,
+                    dataStore = dataStore, context = context)
+                if (userToken.value != "") {
+                    profileViewModel.viewModelScope.launch {
+                        profileViewModel.getProfileDetail(userToken.value)
+                    }
                 }
             }
             is UiState.Success -> {
                 val data = uiState.data
-                ProfileContent(data, false, navController = navController)
+                ProfileContent(data, false, navController = navController,
+                    dataStore = dataStore, context = context)
             }
             is UiState.Error -> {}
         }
@@ -82,10 +84,10 @@ fun ProfileContent(
     loading : Boolean,
     modifier: Modifier = Modifier,
     navController: NavController,
+    context: Context,
+    dataStore: StoreDataUser,
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val dataStore = StoreDataUser(context)
     
     val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(context.getString(R.string.default_web_client_id))
@@ -122,7 +124,7 @@ fun ProfileContent(
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(modifier = Modifier.fillMaxWidth()){
                     Text(
-                        text = data.name.toString(),
+                        text = data.name,
                         style = MaterialTheme.typography.body2,
                         modifier = if (loading) Modifier
                             .shimmerEffect()
@@ -138,7 +140,9 @@ fun ProfileContent(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedButton(
-                        onClick = {},
+                        onClick = {
+                            navController.navigate(Screen.EditProfile.route)
+                        },
                         shape = RoundedCornerShape(27.dp),
                         border = BorderStroke(1.dp, IjoCompo),
                         modifier = Modifier.fillMaxWidth(),
@@ -169,21 +173,19 @@ fun ProfileContent(
                         .fillMaxWidth()
                         .padding(14.dp)
                     ) {
-                        BodyInfoItem(type = "gender", value = data.gender.toString())
+                        BodyInfoItem(type = "gender", value = data.gender)
                         Spacer(modifier = Modifier.height(6.dp))
                         BodyInfoItem(type = "age", value = "${data.age} years old")
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "height", value = "${data.height.toString()} cm")
+                        BodyInfoItem(type = "height", value = "${data.height} cm")
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "weight", value = "${data.weight.toString()} kg")
+                        BodyInfoItem(type = "weight", value = "${data.weight} kg")
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "mealplan", value = "${data.mealsPerDay.toString()} meals per day")
+                        BodyInfoItem(type = "activity", value = data.activityLevel)
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "activity", value = data.activityLevel.toString())
+                        BodyInfoItem(type = "goals", value = data.goal)
                         Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "goals", value = data.goal.toString())
-                        Spacer(modifier = Modifier.height(6.dp))
-                        BodyInfoItem(type = "goals", value = data.dietType.toString())
+                        BodyInfoItem(type = "goals", value = data.dietType)
                     }
                 }
             }
@@ -243,7 +245,12 @@ fun BodyInfoItem(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
+    val context = LocalContext.current as ComponentActivity
+    val dataStore = StoreDataUser(context)
+    val profileViewModel: ProfileViewModel = viewModel(
+        factory = ViewModelFactory(dataStore, Injection.provideRepository()))
     NutriPalTheme {
-        ProfileScreen(navController = rememberNavController())
+        ProfileScreen(navController = rememberNavController(), dataStore = dataStore,
+            profileViewModel = profileViewModel, context = context)
     }
 }
