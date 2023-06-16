@@ -17,7 +17,7 @@ In addition, the app can also provide food recommendations needed to meet those 
 - Track Food Progress
 - History Daily Intakes
 
-## Screenshots
+## UI/UX Prototype
 https://www.figma.com/file/5YjQ2Ogt5MjjZFkMvvV6xL/UIUX-Android?type=design&node-id=13%3A2&t=YWse6bQBRnBuTxQ8-1
 
 ## Requirement
